@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
-public abstract class NaveBase implements Colisionable {
+public abstract class NaveBase implements Colisionable, Objetivo {
 	
     protected Sprite spr;
     protected float xVel = 0;
