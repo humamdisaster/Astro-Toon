@@ -4,24 +4,27 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.SpaceNav.PantallaJuego;
 
 public class NaveEnemiga extends NaveBase {
+    private NaveJugador objetivo; // referencia al jugador
 
-    public NaveEnemiga(Texture tx, float x, float y, float xVel, float yVel, int vidas) {
+    public NaveEnemiga(Texture tx, NaveJugador jugador, float x, float y, int vidas) {
         super(tx, x, y, vidas);
-        this.xVel = xVel;
-        this.yVel = yVel;
+        this.objetivo = jugador;
     }
 
     @Override
     public void update(PantallaJuego juego) {
         actualizarEstadoHerido();
-        
-        float x = spr.getX();
-        float y = spr.getY();
 
-        if (x + xVel < 0 || x + xVel + spr.getWidth() > PantallaJuego.WORLD_WIDTH)
-            xVel *= -1;
-        if (y + yVel < 0 || y + yVel + spr.getHeight() > PantallaJuego.WORLD_HEIGHT)
-            yVel *= -1;
+        // Movimiento hacia la nave
+        float dx = objetivo.getX() - spr.getX();
+        float dy = objetivo.getY() - spr.getY();
+        float distancia = (float)Math.sqrt(dx*dx + dy*dy);
+
+        float velocidad = 2f; // ajusta para que sea más rápida o lenta
+        if (distancia > 0) {
+            xVel = velocidad * dx / distancia;
+            yVel = velocidad * dy / distancia;
+        }
 
         mover();
     }
