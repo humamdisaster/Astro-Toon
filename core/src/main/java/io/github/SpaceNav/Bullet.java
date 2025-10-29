@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Rectangle; 
+import io.github.SpaceNav.PantallaJuego;
 
 public class Bullet implements Colisionable {
 
@@ -16,6 +17,7 @@ public class Bullet implements Colisionable {
     public Bullet(float x, float y, int xSpeed, int ySpeed, Texture tx) {
         spr = new Sprite(tx);
         spr.setPosition(x, y);
+        spr.setSize(20,20);
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
     }
@@ -23,8 +25,8 @@ public class Bullet implements Colisionable {
     public void update() {
         spr.setPosition(spr.getX() + xSpeed, spr.getY() + ySpeed);
         
-        if (spr.getX() < 0 || spr.getX() + spr.getWidth() > Gdx.graphics.getWidth() ||
-             spr.getY() < 0 || spr.getY() + spr.getHeight() > Gdx.graphics.getHeight()) {
+        if (spr.getX() < 0 || spr.getX() + spr.getWidth() > PantallaJuego.WORLD_WIDTH ||
+             spr.getY() < 0 || spr.getY() + spr.getHeight() > PantallaJuego.WORLD_HEIGHT) {
             destroyed = true;
         }
     }
@@ -37,8 +39,6 @@ public class Bullet implements Colisionable {
         return destroyed;
     }
 
-    // --- Métodos de la interfaz Colisionable ---
-    
     @Override
     public Rectangle getArea() {
         return spr.getBoundingRectangle();
@@ -46,17 +46,15 @@ public class Bullet implements Colisionable {
     
     @Override
     public boolean colisionaCon(Colisionable otro) {
-        // Una bala solo colisiona con enemigos
         if (otro instanceof NaveEnemiga) {
-            // Usa getArea() de la interfaz (que NaveEnemiga hereda de NaveBase)
-            return this.getArea().overlaps(otro.getArea());
+            NaveEnemiga enemigo = (NaveEnemiga) otro; 
+            return this.getArea().overlaps(enemigo.getArea());
         }
         return false;
     }
 
     @Override
     public void alColisionar(Colisionable otro) {
-        // La bala siempre se destruye
         this.destroyed = true; 
         
         if (otro instanceof NaveEnemiga) {

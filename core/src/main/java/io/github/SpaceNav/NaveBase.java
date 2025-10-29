@@ -21,20 +21,21 @@ public abstract class NaveBase implements Colisionable {
         this.vidas = vidas;
         spr = new Sprite(tx);
         spr.setPosition(x, y);
-        spr.setBounds(x, y, 45, 45); 
+        spr.setBounds(x, y, 90, 90); 
     }
 
     public abstract void update(PantallaJuego juego);
 
     public void draw(SpriteBatch batch) {
-        if (herido) {
+        if (herido && !destruida) {
             float xOriginal = spr.getX();
             spr.setX(spr.getX() + MathUtils.random(-2, 2));
             spr.draw(batch);
             spr.setX(xOriginal); 
-        } else {
+        } else if (!destruida) { // No dibujar si está destruido
             spr.draw(batch);
         }
+        // Si está destruido, no se dibuja nada.
     }
 
     protected void mover() {
@@ -101,7 +102,7 @@ public abstract class NaveBase implements Colisionable {
     // --- Getters y Setters ---
     
     public boolean estaDestruido() {
-        return !herido && destruida;
+        return destruida;
     }
 
     public boolean estaHerido() {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import io.github.SpaceNav.PantallaJuego; 
 
 public class NaveJugador extends NaveBase {
 
@@ -23,49 +24,51 @@ public class NaveJugador extends NaveBase {
         actualizarEstadoHerido();
 
         if (!herido) {
-            // Lógica de input
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel--;
             if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel++;
             if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel--;
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel++;
         
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                Bullet bala = new Bullet(spr.getX() + spr.getWidth() / 2 - 5, spr.getY() + spr.getHeight() - 5, 0, 3, txBala);
+                Bullet bala = new Bullet(spr.getX() + spr.getWidth() - 5, spr.getY() + spr.getHeight() / 2 - 5, 3, 0, txBala);
                 juego.agregarBala(bala);
                 soundBala.play();
             }
         }
         
-        // Mantenerse en pantalla
         float x = spr.getX();
         float y = spr.getY();
-        if (x + xVel < 0 || x + xVel + spr.getWidth() > Gdx.graphics.getWidth())
-            xVel *= -1;
-        if (y + yVel < 0 || y + yVel + spr.getHeight() > Gdx.graphics.getHeight())
+        
+        if (y + yVel < 0 || y + yVel + spr.getHeight() > PantallaJuego.WORLD_HEIGHT) {
             yVel *= -1;
+        }
+        
+        if (x + xVel < 0) {
+            xVel = 0;
+            spr.setX(0);
+        }
+        if (x + xVel + spr.getWidth() > PantallaJuego.WORLD_WIDTH) {
+            xVel = 0;
+            spr.setX(PantallaJuego.WORLD_WIDTH - spr.getWidth());
+        }
 
         mover();
     }
     
-    /**
-     * Sobrescribimos 'alColisionar' para añadir la lógica de daño
-     * específica del jugador.
-     */
     @Override
     public void alColisionar(Colisionable otro) {
-        super.alColisionar(otro); // 1. Llama al rebote de NaveBase
+        super.alColisionar(otro); 
         
-        // 2. Añade la lógica de daño del jugador
         if (otro instanceof NaveEnemiga) {
-            this.recibirDano(1); // El sonido se maneja en recibirDano
+            this.recibirDano(1); 
         }
     }
 
     @Override
     public void recibirDano(int dano) {
         if (!herido) {
-            super.recibirDano(dano); // Llama a la lógica del padre
-            sonidoHerido.play(); // Añade el sonido
+            super.recibirDano(dano); 
+            sonidoHerido.play();
         }
     }
 }
