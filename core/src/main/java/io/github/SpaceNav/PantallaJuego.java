@@ -42,6 +42,7 @@ public class PantallaJuego implements Screen {
     private int enemigosCreados;
     private float tiempoSpawn = 0f;
     private float intervaloSpawn = 1f; // segundos entre cada enemigo
+    private GestorColisiones gestorColisiones;
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,
                          int velXAsteroides, int velYAsteroides, int cantAsteroides) {
@@ -57,6 +58,7 @@ public class PantallaJuego implements Screen {
         batch = game.getBatch();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
+        gestorColisiones = new GestorColisiones();
 
         // Sonidos y música
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
@@ -87,7 +89,7 @@ public class PantallaJuego implements Screen {
         game.getFont().draw(batch, "Score:" + this.score, WORLD_WIDTH - 150, 30);
         game.getFont().draw(batch, "HighScore:" + game.getHighScore(), WORLD_WIDTH / 2 - 100, 30);
     }
-
+    
     @Override
     public void render(float delta) {
 
@@ -139,46 +141,8 @@ public class PantallaJuego implements Screen {
         }
 
         // --- Colisiones ---
-        if (!nave.estaHerido()) {
-            // Balas vs Enemigos
-            for (int i = 0; i < balas.size(); i++) {
-                Bullet b = balas.get(i);
-                for (int j = 0; j < enemigos.size(); j++) {
-                    NaveEnemiga enemigo = enemigos.get(j);
-                    if (b.colisionaCon(enemigo)) {
-                        b.alColisionar(enemigo);
-                        if (enemigo.estaDestruido()) {
-                            explosionSound.play();
-                            enemigos.remove(j);
-                            j--;
-                            score += 10;
-                        }
-                    }
-                }
-            }
-
-            // Enemigos vs Enemigos (rebotes)
-            for (int i = 0; i < enemigos.size(); i++) {
-                NaveEnemiga e1 = enemigos.get(i);
-                for (int j = i + 1; j < enemigos.size(); j++) {
-                    NaveEnemiga e2 = enemigos.get(j);
-                    if (e1.colisionaCon(e2)) {
-                        e1.alColisionar(e2);
-                    }
-                }
-            }
-
-            // Jugador vs Enemigos
-            for (int i = 0; i < enemigos.size(); i++) {
-                NaveEnemiga enemigo = enemigos.get(i);
-                if (nave.colisionaCon(enemigo)) {
-                    nave.alColisionar(enemigo);
-                    enemigos.remove(i);
-                    i--;
-                }
-            }
-        }
-
+        gestorColisiones.manejarColisiones(nave, enemigos, balas, explosionSound, this);
+        
         // --- Dibujado ---
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         camera.update();
@@ -211,6 +175,10 @@ public class PantallaJuego implements Screen {
         }
     }
 
+    public void incrementarScore(int cantidad) {
+        	score += cantidad;
+    }
+    
     public boolean agregarBala(Bullet bb) {
         return balas.add(bb);
     }
