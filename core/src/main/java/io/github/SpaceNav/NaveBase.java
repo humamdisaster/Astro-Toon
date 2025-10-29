@@ -21,7 +21,7 @@ public abstract class NaveBase implements Colisionable {
         this.vidas = vidas;
         spr = new Sprite(tx);
         spr.setPosition(x, y);
-        spr.setBounds(x, y, 90, 90); 
+        spr.setBounds(x, y, 120, 140); 
     }
 
     public abstract void update(PantallaJuego juego);
