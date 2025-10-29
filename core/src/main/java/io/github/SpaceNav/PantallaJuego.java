@@ -117,7 +117,7 @@ public class PantallaJuego implements Screen {
         tiempoSpawn += delta;
         if (enemigosCreados < enemigosMaxNivel && tiempoSpawn >= intervaloSpawn) {
             tiempoSpawn = 0f;
-            // Usamos el constructor de NaveEnemiga que tenías
+            // Usamos el constructor de NaveEnemiga
             NaveEnemiga enemigo = new NaveEnemiga(texturaNaveEnemiga, nave,
                     WORLD_WIDTH - 100 + random.nextInt(50),
                     random.nextInt((int)WORLD_HEIGHT),
