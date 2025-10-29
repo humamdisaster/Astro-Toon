@@ -192,6 +192,13 @@ public class PantallaJuego implements Screen {
         batch.end();
 	      
         // Logica del juego
+        if (enemigos.isEmpty()) {
+			Screen ss = new PantallaJuego(game,ronda+1, nave.getVidas(), score, 
+					velXAsteroides+3, velYAsteroides+3, cantAsteroides+10);
+			ss.resize(1200, 800);
+			game.setScreen(ss);
+			dispose();
+		}
         
         if (nave.estaDestruido()) {
   			if (score > game.getHighScore())
@@ -201,14 +208,6 @@ public class PantallaJuego implements Screen {
   			game.setScreen(ss);
   			dispose();
   		}
-	      
-	    if (enemigos.isEmpty()) {
-			Screen ss = new PantallaJuego(game,ronda+1, nave.getVidas(), score, 
-					velXAsteroides+3, velYAsteroides+3, cantAsteroides+10);
-			ss.resize(1200, 800);
-			game.setScreen(ss);
-			dispose();
-		}
 	}
     
     public boolean agregarBala(Bullet bb) {
