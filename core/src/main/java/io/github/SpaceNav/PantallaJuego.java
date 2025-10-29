@@ -30,11 +30,9 @@ public class PantallaJuego implements Screen {
 	private ArrayList<NaveEnemiga> enemigos = new ArrayList<>();
 	private ArrayList<Bullet> balas = new ArrayList<>();
 
-	// Texturas cargadas una sola vez
     private Texture texturaNaveJugador;
     private Texture texturaNaveEnemiga;
     private Texture texturaBalaJugador;
-
 
 	public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
 			int velXAsteroides, int velYAsteroides, int cantAsteroides) {
@@ -49,7 +47,6 @@ public class PantallaJuego implements Screen {
 		camera = new OrthographicCamera();	
 		camera.setToOrtho(false, 800, 640);
 		
-		//inicializar assets; musica de fondo y efectos de sonido
 		explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
 		explosionSound.setVolume(1,0.5f);
 		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav")); 
@@ -58,19 +55,16 @@ public class PantallaJuego implements Screen {
 		gameMusic.setVolume(0.5f);
 		gameMusic.play();
 		
-		// Cargar las texturas
         texturaNaveJugador = new Texture(Gdx.files.internal("MainShip3.png"));
-        texturaNaveEnemiga = new Texture(Gdx.files.internal("MainShip3.png")); // Temporalmente usa la misma textura
+        texturaNaveEnemiga = new Texture(Gdx.files.internal("MainShip3.png")); 
         texturaBalaJugador = new Texture(Gdx.files.internal("Rocket2.png"));
         
-	    // Cargar imagen de la nave del jugador
 	    nave = new NaveJugador(Gdx.graphics.getWidth()/2-50, 30, texturaNaveJugador,
 	    				Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")), 
 	    				texturaBalaJugador,
 	    				Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"))); 
         nave.setVidas(vidas);
         
-        //crear enemigos
         Random r = new Random();
 	    for (int i = 0; i < cantAsteroides; i++) {
 	        NaveEnemiga enemigo = new NaveEnemiga(texturaNaveEnemiga,
@@ -78,8 +72,7 @@ public class PantallaJuego implements Screen {
 	  	            50+r.nextInt((int)Gdx.graphics.getHeight()-50),
 	  	            velXAsteroides+r.nextInt(4), 
 	  	            velYAsteroides+r.nextInt(4),
-	  	            1); // 1 vida por defecto para enemigos
-	  	            
+	  	            1); 
 	  	    enemigos.add(enemigo);
 	  	}
 	}
@@ -98,21 +91,28 @@ public class PantallaJuego implements Screen {
           batch.begin();
 		  dibujaEncabezado();
 		  
-		  // Actualizar la lógica de la nave (input, movimiento)
 		  nave.update(this); 
 		  
 	      if (!nave.estaHerido()) {
-		      // colisiones entre balas y enemigos y su destruccion  
+		      // colisiones entre balas y enemigos
 	    	  for (int i = 0; i < balas.size(); i++) {
 		            Bullet b = balas.get(i);
 		            b.update();
 		            
 		            for (int j = 0; j < enemigos.size(); j++) {    
-		              if (b.checkCollision(enemigos.get(j))) { 
-		            	 explosionSound.play();
-		            	 enemigos.remove(j); 
-		            	 j--;
-		            	 score +=10;
+		              NaveEnemiga enemigo = enemigos.get(j);
+		              
+		              // --- USO DE LA INTERFAZ ---
+		              if (b.colisionaCon(enemigo)) { 
+		            	 b.alColisionar(enemigo); // La bala se destruye y el enemigo recibe daño
+		            	 
+		            	 // Revisamos si el enemigo fue destruido por la colisión
+		            	 if (enemigo.estaDestruido()) {
+		            		 explosionSound.play();
+		            		 enemigos.remove(j);
+		            		 j--;
+		            		 score +=10;
+		            	 }
 		              }   	  
 		  	        }
 		                
@@ -122,18 +122,21 @@ public class PantallaJuego implements Screen {
 		            }
 		      }
 		      
-		      //actualizar movimiento de enemigos (IA)
+		      //actualizar movimiento de enemigos
 		      for (NaveEnemiga enemigo : enemigos) {
 		          enemigo.update(this);
 		      }
 		      
-		      //colisiones entre enemigos y sus rebotes  
+		      //colisiones entre enemigos (rebotes)
 		      for (int i=0;i<enemigos.size();i++) {
 		    	NaveEnemiga enemigo1 = enemigos.get(i);   
 		        for (int j=0;j<enemigos.size();j++) {
 		          NaveEnemiga enemigo2 = enemigos.get(j); 
 		          if (i<j) {
-		        	  enemigo1.checkCollision(enemigo2);
+		        	  // --- USO DE LA INTERFAZ ---
+		        	  if (enemigo1.colisionaCon(enemigo2)) {
+		        		  enemigo1.alColisionar(enemigo2); // Solo rebotan
+		        	  }
 		          }
 		        }
 		      } 
@@ -144,7 +147,6 @@ public class PantallaJuego implements Screen {
 	          b.draw(batch);
 	      }
 	      
-	      // dibujar nave
 	      nave.draw(batch); 
 	      
 	      //dibujar enemigos y manejar colision con nave
@@ -152,14 +154,16 @@ public class PantallaJuego implements Screen {
 	    	    NaveEnemiga enemigo = enemigos.get(i);
 	    	    enemigo.draw(batch);
 		          
-	              if (nave.checkCollision(enemigo)) {
-		            //enemigo se destruye con el choque             
+	    	    // --- USO DE LA INTERFAZ ---
+	            if (nave.colisionaCon(enemigo)) {
+	            	 nave.alColisionar(enemigo); // Jugador y enemigo rebotan, jugador recibe daño
+	            	 
+	            	 // En esta colisión, el enemigo también se destruye
 	            	 enemigos.remove(i);
 	            	 i--;
               }   	  
   	        }
 	      
-	      // Verificar Game Over
 	      if (nave.estaDestruido()) {
   			if (score > game.getHighScore())
   				game.setHighScore(score);
@@ -170,7 +174,6 @@ public class PantallaJuego implements Screen {
   		  }
 	      batch.end();
 	      
-	      //Verificar Nivel completado
 	      if (enemigos.size()==0) {
 			Screen ss = new PantallaJuego(game,ronda+1, nave.getVidas(), score, 
 					velXAsteroides+3, velYAsteroides+3, cantAsteroides+10);
@@ -191,28 +194,19 @@ public class PantallaJuego implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) {
-		
-	}
+	public void resize(int width, int height) { }
 
 	@Override
-	public void pause() {
-		
-	}
+	public void pause() { }
 
 	@Override
-	public void resume() {
-		
-	}
+	public void resume() { }
 
 	@Override
-	public void hide() {
-		
-	}
+	public void hide() { }
 
 	@Override
 	public void dispose() {
-		// Liberar todos los recursos
 		this.explosionSound.dispose();
 		this.gameMusic.dispose();
 		texturaNaveJugador.dispose();
