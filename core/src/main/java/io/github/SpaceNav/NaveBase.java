@@ -10,7 +10,8 @@ import com.badlogic.gdx.math.Rectangle;
  * Clase abstracta para todas las naves del juego (Jugador y Enemigos).
  * Implementa Colisionable y define la lógica común de vida, movimiento y daño.
  */
-public abstract class NaveBase implements Colisionable {
+// Esta es la línea resuelta: combina el comentario de HEAD y la interfaz de la otra rama.
+public abstract class NaveBase implements Colisionable, Objetivo {
 	
     protected Sprite spr;
     protected float xVel = 0;

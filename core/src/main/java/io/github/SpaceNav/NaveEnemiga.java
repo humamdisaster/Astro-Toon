@@ -4,17 +4,19 @@ import com.badlogic.gdx.graphics.Texture;
 import io.github.SpaceNav.PantallaJuego;
 
 public class NaveEnemiga extends NaveBase {
-    private NaveJugador objetivo; // referencia al jugador
+    private Objetivo objetivo; // referencia al jugador
 
-    public NaveEnemiga(Texture tx, NaveJugador jugador, float x, float y, int vidas) {
+    public NaveEnemiga(Texture tx, Objetivo objetivo, float x, float y, int vidas) {
         super(tx, x, y, vidas);
-        this.objetivo = jugador;
+        this.objetivo = objetivo;
     }
 
     @Override
     public void update(PantallaJuego juego) {
         actualizarEstadoHerido();
 
+        if (objetivo == null || objetivo.estaDestruido()) return;
+        
         // Movimiento hacia la nave
         float dx = objetivo.getX() - spr.getX();
         float dy = objetivo.getY() - spr.getY();
