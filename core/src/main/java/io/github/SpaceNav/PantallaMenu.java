@@ -3,6 +3,7 @@ package io.github.SpaceNav;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -13,6 +14,7 @@ public class PantallaMenu implements Screen {
 	private SpaceNavigation game;
 	private OrthographicCamera camera;
 	private Texture backgroundTexture;
+	private Music menuMusic;
 
 	public PantallaMenu(SpaceNavigation game) {
 		this.game = game;
@@ -20,6 +22,11 @@ public class PantallaMenu implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, PantallaJuego.WORLD_WIDTH, PantallaJuego.WORLD_HEIGHT);
 		backgroundTexture = new Texture(Gdx.files.internal("portada.png"));
+		
+		menuMusic = Gdx.audio.newMusic(Gdx.files.internal("inicio.mp3")); 
+        menuMusic.setLooping(true);
+        menuMusic.setVolume(0.5f);
+        menuMusic.play();
 	}
 
 	@Override
@@ -59,14 +66,12 @@ public class PantallaMenu implements Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+		menuMusic.pause();
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
+		menuMusic.play();
 	}
 
 	@Override
@@ -77,8 +82,7 @@ public class PantallaMenu implements Screen {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		backgroundTexture.dispose();
-		
+        menuMusic.dispose();
 	}  
 }
