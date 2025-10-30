@@ -76,7 +76,6 @@ public class PantallaJuego implements Screen {
 
         // Cargar sonidos y música
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-        explosionSound.setVolume(1, 0.5f);
         gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav"));
         gameMusic.setLooping(true);
         gameMusic.setVolume(1f);
