@@ -28,9 +28,7 @@ public class PantallaJuego implements Screen {
     private Music gameMusic;
     private int score;
     private int ronda;
-    private int velXAsteroides; 
-    private int velYAsteroides; 
-    private int cantAsteroides;
+    private int cantEnemigos;
 
     // Entidades del juego
     private NaveJugador nave;
@@ -62,15 +60,12 @@ public class PantallaJuego implements Screen {
     private float tiempoTransicion = 0f;
     private boolean mostrandoTransicion = false;
 
-    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
-                         int velXAsteroides, int velYAsteroides, int cantAsteroides) {
+    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score, int cantEnemigos) {
         this.game = game;
         this.ronda = ronda;
         this.score = score;
-        this.velXAsteroides = velXAsteroides;
-        this.velYAsteroides = velYAsteroides;
-        this.cantAsteroides = cantAsteroides;
-        this.enemigosMaxNivel = cantAsteroides;
+        this.cantEnemigos = cantEnemigos;
+        this.enemigosMaxNivel = cantEnemigos;
         this.enemigosCreados = 0;
 
         batch = game.getBatch();
@@ -81,10 +76,10 @@ public class PantallaJuego implements Screen {
 
         // Cargar sonidos y música
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-        explosionSound.setVolume(1, 0.5f);
+        explosionSound.setVolume(1, 0.2f);
         gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav"));
         gameMusic.setLooping(true);
-        gameMusic.setVolume(0.5f);
+        gameMusic.setVolume(1f);
         gameMusic.play();
 
         // Cargar texturas
@@ -193,8 +188,7 @@ public class PantallaJuego implements Screen {
             batch.end();
 
             if (tiempoTransicion >= 3f) {
-                Screen siguiente = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
-                                                     velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 5);
+                Screen siguiente = new PantallaJuego(game, ronda + 1, nave.getVidas(), score, cantEnemigos + 5);
                 siguiente.resize(1200, 800);
                 game.setScreen(siguiente);
                 dispose();

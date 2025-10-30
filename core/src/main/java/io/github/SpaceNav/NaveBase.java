@@ -106,12 +106,12 @@ public abstract class NaveBase implements Colisionable, Objetivo {
             NaveBase otraNave = (NaveBase) otro; 
             
             if (xVel == 0) xVel += otraNave.getXVel() / 2;
-            if (otraNave.getXVel() == 0) otraNave.setXVel(otraNave.getXVel() + xVel / 2);
+            if (otraNave.getXVel() == 0) otraNave.setXVel(otraNave.getXVel() + xVel);
             xVel = -xVel;
             otraNave.setXVel(-otraNave.getXVel());
             
             if (yVel == 0) yVel += otraNave.getYVel() / 2;
-            if (otraNave.getYVel() == 0) otraNave.setYVel(otraNave.getYVel() + yVel / 2);
+            if (otraNave.getYVel() == 0) otraNave.setYVel(otraNave.getYVel() + yVel);
             yVel = -yVel;
             otraNave.setYVel(-otraNave.getYVel());
         }

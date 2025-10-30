@@ -24,7 +24,7 @@ public class GestorColisiones {
                     if (b.colisionaCon(enemigo)) {
                         b.alColisionar(enemigo);
                         if (enemigo.estaDestruido()) {
-                            explosionSound.play();
+                            explosionSound.play(0.3f);
                             enemigos.remove(j);
                             j--;
                             juego.incrementarScore(10);

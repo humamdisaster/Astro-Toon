@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import io.github.SpaceNav.PantallaJuego; 
 
 /**
  * Representa la nave controlada por el jugador.
@@ -29,10 +28,10 @@ public class NaveJugador extends NaveBase {
 
         if (!herido) {
             // Lógica de input
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel--;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel++;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel--;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel++;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel -= 3;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel += 3;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel -= 3;
+            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel += 3;
         
             // Disparo
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -47,7 +46,7 @@ public class NaveJugador extends NaveBase {
         float y = spr.getY();
         
         if (y + yVel < 0 || y + yVel + spr.getHeight() > PantallaJuego.WORLD_HEIGHT) {
-            yVel *= -1;
+            yVel = 0;
         }
         
         if (x + xVel < 0) {
