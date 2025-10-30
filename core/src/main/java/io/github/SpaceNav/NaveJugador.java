@@ -20,8 +20,8 @@ public class NaveJugador extends NaveBase {
     public NaveJugador(float x, float y, Texture tx, Texture txBala) {
         super(tx, x, y, 3); 
         this.txBala = txBala;
-        this.sonidoHerido = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
-        this.soundBala = Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"));
+        this.sonidoHerido = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
+        this.soundBala = Gdx.audio.newSound(Gdx.files.internal("shoot.mp3"));
         this.soundPowerUp = Gdx.audio.newSound(Gdx.files.internal("powerup.mp3"));
     }
 
