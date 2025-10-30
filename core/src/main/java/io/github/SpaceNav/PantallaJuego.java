@@ -76,7 +76,7 @@ public class PantallaJuego implements Screen {
 
         // Cargar sonidos y música
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-        explosionSound.setVolume(1, 0.2f);
+        explosionSound.setVolume(1, 0.5f);
         gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav"));
         gameMusic.setLooping(true);
         gameMusic.setVolume(1f);
@@ -91,10 +91,7 @@ public class PantallaJuego implements Screen {
         texturaEscudo = new Texture(Gdx.files.internal("cajaEscudo.png"));
 
         // Crear nave del jugador
-        nave = new NaveJugador(30, WORLD_HEIGHT / 2 - 50, texturaNaveJugador,
-                Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")),
-                texturaBalaJugador,
-                Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));
+        nave = new NaveJugador(30, WORLD_HEIGHT / 2 - 50, texturaNaveJugador, texturaBalaJugador);
         nave.setVidas(vidas);
     }
 
