@@ -27,6 +27,8 @@ public class GestorColisiones {
                             enemigos.remove(j);
                             j--;
                             juego.incrementarScore(10);
+                            
+                            juego.soltarPowerUp(enemigo.getX(), enemigo.getY());
                         }
                     }
                 }

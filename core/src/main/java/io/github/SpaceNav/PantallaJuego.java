@@ -202,7 +202,7 @@ public class PantallaJuego implements Screen {
      * @param x Posición en x donde soltar el item.
      * @param y Posición en y donde soltar el item.
      */
-    private void soltarPowerUp(float x, float y) {
+    public void soltarPowerUp(float x, float y) {
         if (random.nextBoolean()) {
             powerUps.add(new PowerUp(x, y, texturaVida, TipoPowerUp.VIDA));
         } else {
