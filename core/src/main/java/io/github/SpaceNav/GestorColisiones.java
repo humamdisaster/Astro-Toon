@@ -9,6 +9,7 @@ public class GestorColisiones {
             NaveJugador nave,
             ArrayList<NaveEnemiga> enemigos,
             ArrayList<Bullet> balas,
+            ArrayList<PowerUp> powerUps,  // <-- agregado
             Sound explosionSound,
             PantallaJuego juego) {
 
@@ -25,7 +26,7 @@ public class GestorColisiones {
                             explosionSound.play();
                             enemigos.remove(j);
                             j--;
-                            juego.incrementarScore(10); // delega al juego el cambio de score
+                            juego.incrementarScore(10);
                         }
                     }
                 }
@@ -50,6 +51,17 @@ public class GestorColisiones {
                     enemigos.remove(i);
                     i--;
                 }
+            }
+        }
+
+        // --- Jugador vs PowerUps ---
+        for (int i = 0; i < powerUps.size(); i++) {
+            PowerUp p = powerUps.get(i);
+            if (p.colisionaCon(nave)) {
+                nave.recibirPowerUp(p.getTipo());
+                p.alColisionar(nave);
+                powerUps.remove(i); // <-- eliminar para que desaparezca
+                i--;
             }
         }
     }

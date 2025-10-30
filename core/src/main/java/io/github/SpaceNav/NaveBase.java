@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
+/**
+ * Clase abstracta para todas las naves del juego (Jugador y Enemigos).
+ * Implementa Colisionable y define la lógica común de vida, movimiento y daño.
+ */
+// Esta es la línea resuelta: combina el comentario de HEAD y la interfaz de la otra rama.
 public abstract class NaveBase implements Colisionable, Objetivo {
 	
     protected Sprite spr;
@@ -20,28 +25,40 @@ public abstract class NaveBase implements Colisionable, Objetivo {
     public NaveBase(Texture tx, float x, float y, int vidas) {
         this.vidas = vidas;
         spr = new Sprite(tx);
-        spr.setPosition(x, y);
-        spr.setBounds(x, y, 120, 140); 
+        spr.setBounds(x, y, 90, 90); 
     }
 
+    /**
+     * Método abstracto para actualizar la lógica de la nave.
+     * @param juego La pantalla de juego principal.
+     */
     public abstract void update(PantallaJuego juego);
 
+    /**
+     * Dibuja la nave en la pantalla.
+     * @param batch El SpriteBatch para dibujar.
+     */
     public void draw(SpriteBatch batch) {
         if (herido && !destruida) {
             float xOriginal = spr.getX();
             spr.setX(spr.getX() + MathUtils.random(-2, 2));
             spr.draw(batch);
             spr.setX(xOriginal); 
-        } else if (!destruida) { // No dibujar si está destruido
+        } else if (!destruida) { 
             spr.draw(batch);
         }
-        // Si está destruido, no se dibuja nada.
     }
 
+    /**
+     * Aplica la velocidad actual para mover el sprite.
+     */
     protected void mover() {
         spr.setPosition(spr.getX() + xVel, spr.getY() + yVel);
     }
     
+    /**
+     * Reduce el temporizador de "herido" (invencibilidad) cada frame.
+     */
     protected void actualizarEstadoHerido() {
         if (herido) {
             tiempoHerido--;
@@ -51,6 +68,10 @@ public abstract class NaveBase implements Colisionable, Objetivo {
         }
     }
 
+    /**
+     * Aplica daño a la nave si no está herida.
+     * @param dano La cantidad de daño a recibir.
+     */
     public void recibirDano(int dano) {
         if (!herido) {
             this.vidas -= dano;
@@ -62,8 +83,6 @@ public abstract class NaveBase implements Colisionable, Objetivo {
             }
         }
     }
-    
-    // --- Métodos de la interfaz Colisionable ---
     
     @Override
     public Rectangle getArea() {
@@ -83,7 +102,6 @@ public abstract class NaveBase implements Colisionable, Objetivo {
 
     @Override
     public void alColisionar(Colisionable otro) {
-        // Lógica de rebote (común para todas las naves)
         if (otro instanceof NaveBase) {
             NaveBase otraNave = (NaveBase) otro; 
             
@@ -97,6 +115,16 @@ public abstract class NaveBase implements Colisionable, Objetivo {
             yVel = -yVel;
             otraNave.setYVel(-otraNave.getYVel());
         }
+    }
+
+    /**
+     * Activa el estado de invencibilidad (herido) por una duración específica.
+     * Usado por el Power-Up de Escudo.
+     * @param duracion El número de frames que durará.
+     */
+    public void activarInvencibilidad(int duracion) {
+        this.herido = true;
+        this.tiempoHerido = duracion;
     }
 
     // --- Getters y Setters ---

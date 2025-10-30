@@ -6,6 +6,10 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.SpaceNav.PantallaJuego; 
 
+/**
+ * Representa la nave controlada por el jugador.
+ * Hereda de NaveBase y maneja el input del teclado.
+ */
 public class NaveJugador extends NaveBase {
 
     private Sound sonidoHerido;
@@ -24,11 +28,13 @@ public class NaveJugador extends NaveBase {
         actualizarEstadoHerido();
 
         if (!herido) {
+            // Lógica de input
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel--;
             if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel++;
             if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel--;
             if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel++;
         
+            // Disparo
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
                 Bullet bala = new Bullet(spr.getX() + spr.getWidth() - 5, spr.getY() + spr.getHeight() / 2 - 5, 3, 0, txBala);
                 juego.agregarBala(bala);
@@ -36,6 +42,7 @@ public class NaveJugador extends NaveBase {
             }
         }
         
+        // Límites de pantalla
         float x = spr.getX();
         float y = spr.getY();
         
@@ -57,7 +64,7 @@ public class NaveJugador extends NaveBase {
     
     @Override
     public void alColisionar(Colisionable otro) {
-        super.alColisionar(otro); 
+        super.alColisionar(otro); // Llama al rebote de NaveBase
         
         if (otro instanceof NaveEnemiga) {
             this.recibirDano(1); 
@@ -69,6 +76,21 @@ public class NaveJugador extends NaveBase {
         if (!herido) {
             super.recibirDano(dano); 
             sonidoHerido.play();
+        }
+    }
+
+    /**
+     * Procesa el efecto de un power-up recolectado.
+     * @param tipo El TipoPowerUp que se recogió.
+     */
+    public void recibirPowerUp(TipoPowerUp tipo) {
+        switch (tipo) {
+            case VIDA:
+                this.setVidas(this.getVidas() + 1);
+                break;
+            case ESCUDO:
+                this.activarInvencibilidad(180); // 3 segundos
+                break;
         }
     }
 }
