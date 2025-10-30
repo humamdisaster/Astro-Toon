@@ -57,7 +57,8 @@ public class PantallaJuego implements Screen {
     private float tiempoSpawn = 0f;
     private float intervaloSpawn = 1f; // segundos entre cada enemigo
     private GestorColisiones gestorColisiones;
-
+    private GestorRondas gestorRondas;
+    private boolean rondaCompletada = false;
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
                          int velXAsteroides, int velYAsteroides, int cantAsteroides) {
@@ -74,6 +75,7 @@ public class PantallaJuego implements Screen {
         camera = new OrthographicCamera();	
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         gestorColisiones = new GestorColisiones();
+        gestorRondas = new GestorRondas();
 
         // Cargar sonidos y música
         explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
@@ -172,23 +174,13 @@ public class PantallaJuego implements Screen {
 	      
         // --- 4. LÓGICA DE ESTADO DEL JUEGO ---
         
-        // Condición de victoria (Ronda completada)
-        if (enemigos.isEmpty() && enemigosCreados >= enemigosMaxNivel) {
-            Screen ss = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
-                    velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 5);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
-            dispose();
-            return; 
-        }
+        gestorRondas.manejarRondas(this, nave, enemigosCreados, enemigosMaxNivel);
         
-        // Condición de derrota (Game Over)
-        if (nave.estaDestruido()) {
-            if (score > game.getHighScore())
-                game.setHighScore(score);
-            Screen ss = new PantallaGameOver(game);
-            ss.resize(1200, 800);
-            game.setScreen(ss);
+        if (rondaCompletada) {
+            Screen siguiente = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
+                                                 velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 5);
+            siguiente.resize(1200, 800);
+            game.setScreen(siguiente);
             dispose();
         }
     }
@@ -219,6 +211,28 @@ public class PantallaJuego implements Screen {
         return balas.add(bb);
     }
 	
+    public boolean isRondaCompletada() {
+        return rondaCompletada;
+    }
+
+    public void setRondaCompletada(boolean valor) {
+        this.rondaCompletada = valor;
+    }
+
+    public SpaceNavigation getGame() {
+        return game;
+    }
+
+    public ArrayList<NaveEnemiga> getEnemigos() {
+        return enemigos;
+    }
+    
+    public int getScore() {
+        return score;
+    }
+    
+    
+    
     @Override
     public void show() {
         gameMusic.play();
