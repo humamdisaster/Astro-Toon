@@ -3,6 +3,7 @@ package io.github.SpaceNav;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 
+//Maneja todo tipo de colisiones
 public class GestorColisiones {
 
     public void manejarColisiones(
