@@ -96,10 +96,7 @@ public class PantallaJuego implements Screen {
         texturaEscudo = new Texture(Gdx.files.internal("cajaEscudo.png"));
 
         // Crear nave del jugador
-        nave = new NaveJugador(30, WORLD_HEIGHT / 2 - 50, texturaNaveJugador,
-                Gdx.audio.newSound(Gdx.files.internal("hurt.ogg")),
-                texturaBalaJugador,
-                Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3")));
+        nave = new NaveJugador(30, WORLD_HEIGHT / 2 - 50, texturaNaveJugador, texturaBalaJugador);
         nave.setVidas(vidas);
     }
 

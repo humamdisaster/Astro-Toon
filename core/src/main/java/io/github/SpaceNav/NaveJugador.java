@@ -15,12 +15,14 @@ public class NaveJugador extends NaveBase {
     private Sound sonidoHerido;
     private Sound soundBala;
     private Texture txBala;
+    private Sound soundPowerUp;
 
-    public NaveJugador(float x, float y, Texture tx, Sound soundChoque, Texture txBala, Sound soundBala) {
+    public NaveJugador(float x, float y, Texture tx, Texture txBala) {
         super(tx, x, y, 3); 
-        this.sonidoHerido = soundChoque;
-        this.soundBala = soundBala;
         this.txBala = txBala;
+        this.sonidoHerido = Gdx.audio.newSound(Gdx.files.internal("hurt.ogg"));
+        this.soundBala = Gdx.audio.newSound(Gdx.files.internal("pop-sound.mp3"));
+        this.soundPowerUp = Gdx.audio.newSound(Gdx.files.internal("powerup.mp3"));
     }
 
     @Override
@@ -84,6 +86,7 @@ public class NaveJugador extends NaveBase {
      * @param tipo El TipoPowerUp que se recogió.
      */
     public void recibirPowerUp(TipoPowerUp tipo) {
+    	soundPowerUp.play(0.8f);
         switch (tipo) {
             case VIDA:
                 this.setVidas(this.getVidas() + 1);
@@ -92,5 +95,11 @@ public class NaveJugador extends NaveBase {
                 this.activarInvencibilidad(180); // 3 segundos
                 break;
         }
+    }
+    
+    public void dispose() {
+        sonidoHerido.dispose();
+        soundBala.dispose();
+        soundPowerUp.dispose();
     }
 }
