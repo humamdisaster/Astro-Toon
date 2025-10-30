@@ -59,6 +59,8 @@ public class PantallaJuego implements Screen {
     private GestorColisiones gestorColisiones;
     private GestorRondas gestorRondas;
     private boolean rondaCompletada = false;
+    private float tiempoTransicion = 0f;
+    private boolean mostrandoTransicion = false;
 
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score,  
                          int velXAsteroides, int velYAsteroides, int cantAsteroides) {
@@ -176,13 +178,29 @@ public class PantallaJuego implements Screen {
         
         gestorRondas.manejarRondas(this, nave, enemigosCreados, enemigosMaxNivel);
         
-        if (rondaCompletada) {
-            Screen siguiente = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
-                                                 velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 5);
-            siguiente.resize(1200, 800);
-            game.setScreen(siguiente);
-            dispose();
+        if (rondaCompletada && !mostrandoTransicion) {
+            mostrandoTransicion = true;
+            tiempoTransicion = 0f;
         }
+
+        // Si estamos en transición, mostrar texto y contar tiempo
+        if (mostrandoTransicion) {
+            tiempoTransicion += delta;
+
+            batch.begin();
+            game.getFont().getData().setScale(3f);
+            game.getFont().draw(batch, "RONDA " + (ronda + 1), WORLD_WIDTH / 2f - 130, WORLD_HEIGHT / 2f);
+            batch.end();
+
+            if (tiempoTransicion >= 3f) {
+                Screen siguiente = new PantallaJuego(game, ronda + 1, nave.getVidas(), score,
+                                                     velXAsteroides + 1, velYAsteroides + 1, cantAsteroides + 5);
+                siguiente.resize(1200, 800);
+                game.setScreen(siguiente);
+                dispose();
+            }
+        }
+
     }
 
     public void incrementarScore(int cantidad) {
