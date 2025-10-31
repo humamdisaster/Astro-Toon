@@ -3,9 +3,28 @@ package io.github.SpaceNav;
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 
-//Maneja todo tipo de colisiones
+/**
+ * Clase responsable de gestionar todas las colisiones entre los objetos
+ * del juego, incluyendo jugador, enemigos, balas y power-ups.
+ * Se encarga de detectar colisiones y aplicar las consecuencias correspondientes,
+ * como daño, destrucción de objetos, incremento de puntuación o activación de efectos.
+ */
 public class GestorColisiones {
 
+	/**
+     * Maneja todas las colisiones del juego en el estado actual.
+     * Comprueba colisiones entre balas y enemigos, entre enemigos, 
+     * entre el jugador y enemigos, y entre el jugador y power-ups.
+     * Aplica los efectos correspondientes a cada interacción, incluyendo
+     * reproducción de sonidos, eliminación de objetos y activación de power-ups.
+     *
+     * @param nave Nave del jugador
+     * @param enemigos Lista de enemigos activos en la pantalla
+     * @param balas Lista de balas activas en la pantalla
+     * @param powerUps Lista de power-ups presentes en la pantalla
+     * @param explosionSound Sonido que se reproduce al destruir un enemigo
+     * @param juego Instancia de {@link PantallaJuego} para actualizar score y gestionar eventos
+     */
     public void manejarColisiones(
             NaveJugador nave,
             ArrayList<NaveEnemiga> enemigos,

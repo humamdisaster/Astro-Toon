@@ -6,16 +6,33 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
- * Representa la nave controlada por el jugador.
- * Hereda de NaveBase y maneja el input del teclado.
+ * Clase que representa la nave controlada por el jugador.
+ * Hereda de {@link NaveBase} y gestiona el input del teclado para moverse y disparar.
+ * Además maneja efectos de sonido al recibir daño, disparar o recolectar power-ups.
  */
 public class NaveJugador extends NaveBase {
 
+	/** Sonido reproducido al recibir daño */
     private Sound sonidoHerido;
+    
+    /** Sonido reproducido al disparar una bala */
     private Sound soundBala;
+    
+    /** Textura utilizada para las balas disparadas */
     private Texture txBala;
+    
+    /** Textura utilizada para las balas disparadas */
     private Sound soundPowerUp;
 
+    /**
+     * Constructor de la nave del jugador.
+     * Inicializa la textura, posición, vidas y los sonidos.
+     *
+     * @param x Posición horizontal inicial
+     * @param y Posición vertical inicial
+     * @param tx Textura de la nave
+     * @param txBala Textura de las balas disparadas
+     */
     public NaveJugador(float x, float y, Texture tx, Texture txBala) {
         super(tx, x, y, 3); 
         this.txBala = txBala;
@@ -24,6 +41,14 @@ public class NaveJugador extends NaveBase {
         this.soundPowerUp = Gdx.audio.newSound(Gdx.files.internal("powerup.mp3"));
     }
 
+    /**
+     * Actualiza la lógica de la nave del jugador en cada frame.
+     * - Gestiona el estado de herido/invencibilidad
+     * - Procesa input de teclado para moverse y disparar
+     * - Mantiene la nave dentro de los límites de la pantalla
+     *
+     * @param juego Instancia de {@link PantallaJuego} para agregar balas y acceder al estado del juego
+     */
     @Override
     public void update(PantallaJuego juego) {
         actualizarEstadoHerido();
@@ -63,6 +88,12 @@ public class NaveJugador extends NaveBase {
         mover();
     }
     
+    /**
+     * Maneja la colisión con otro objeto {@link Colisionable}.
+     * Llama al rebote de {@link NaveBase} y aplica daño si colisiona con una nave enemiga.
+     *
+     * @param otro Objeto colisionable que colisiona con la nave
+     */
     @Override
     public void alColisionar(Colisionable otro) {
         super.alColisionar(otro); // Llama al rebote de NaveBase
@@ -72,6 +103,10 @@ public class NaveJugador extends NaveBase {
         }
     }
 
+    /**
+     * Aplica daño a la nave, reproduciendo el sonido correspondiente.
+     * @param dano Cantidad de daño a recibir
+     */
     @Override
     public void recibirDano(int dano) {
         if (!herido) {
@@ -82,7 +117,10 @@ public class NaveJugador extends NaveBase {
 
     /**
      * Procesa el efecto de un power-up recolectado.
-     * @param tipo El TipoPowerUp que se recogió.
+     * - VIDA: incrementa las vidas del jugador
+     * - ESCUDO: activa invencibilidad temporal
+     *
+     * @param tipo El {@link TipoPowerUp} que se recogió
      */
     public void recibirPowerUp(TipoPowerUp tipo) {
     	soundPowerUp.play(0.8f);
@@ -96,6 +134,9 @@ public class NaveJugador extends NaveBase {
         }
     }
     
+    /**
+     * Libera los recursos de sonido utilizados por la nave.
+     */
     public void dispose() {
         sonidoHerido.dispose();
         soundBala.dispose();

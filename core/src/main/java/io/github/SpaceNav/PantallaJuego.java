@@ -13,12 +13,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /**
- * Pantalla principal del juego. Maneja la lógica de renderizado,
- * actualizaciones, colisiones y estado del juego.
+ * Pantalla principal del juego. Se encarga de la lógica general,
+ * incluyendo renderizado, control de entidades, detección de colisiones,
+ * administración de rondas y actualización del estado del juego.
+ *
+ * <p>Esta clase implementa {@link Screen} y funciona como el núcleo
+ * donde se combinan los diferentes sistemas del juego, como el
+ * {@link GestorColisiones} y el {@link GestorRondas}.</p>
  */
 public class PantallaJuego implements Screen {
 
+	/** Ancho del mundo del juego. */
     public static final float WORLD_WIDTH = 800;
+    /** Alto del mundo del juego. */
     public static final float WORLD_HEIGHT = 640;
 
     private SpaceNavigation game;
@@ -36,7 +43,7 @@ public class PantallaJuego implements Screen {
     private ArrayList<Bullet> balas = new ArrayList<>();
     /** Lista de power-ups activos en pantalla. */
     private ArrayList<PowerUp> powerUps = new ArrayList<>();
-    /** Generador de números aleatorios para drops de power-ups. */
+    /** Generador de números aleatorios para el drop de power-ups. */
     private Random random = new Random();
 
     // Texturas
@@ -60,6 +67,16 @@ public class PantallaJuego implements Screen {
     private float tiempoTransicion = 0f;
     private boolean mostrandoTransicion = false;
 
+    /**
+     * Constructor principal. Inicializa los recursos y entidades necesarias
+     * para comenzar la ronda.
+     *
+     * @param game referencia al juego principal.
+     * @param ronda número actual de la ronda.
+     * @param vidas cantidad de vidas del jugador.
+     * @param score puntuación acumulada.
+     * @param cantEnemigos cantidad de enemigos que aparecerán en la ronda.
+     */
     public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score, int cantEnemigos) {
         this.game = game;
         this.ronda = ronda;
@@ -95,7 +112,7 @@ public class PantallaJuego implements Screen {
     }
 
     /**
-     * Dibuja el HUD (Vidas, Ronda, Score) en la pantalla.
+     * Dibuja la interfaz del jugador (HUD), incluyendo vidas, ronda y puntuación.
      */
     public void dibujaEncabezado() {
         CharSequence str = "Vidas: " + nave.getVidas() + " Ronda: " + ronda;
@@ -105,6 +122,12 @@ public class PantallaJuego implements Screen {
         game.getFont().draw(batch, "HighScore:" + game.getHighScore(), WORLD_WIDTH / 2 - 100, 30);
     }
     
+    /**
+     * Lógica principal del juego. Actualiza entidades, gestiona colisiones,
+     * dibuja los elementos y controla el avance entre rondas.
+     *
+     * @param delta tiempo transcurrido desde el último frame (en segundos).
+     */
     @Override
     public void render(float delta) {
         
@@ -193,14 +216,18 @@ public class PantallaJuego implements Screen {
 
     }
 
+    /**
+     * Incrementa la puntuación del jugador.
+     * @param cantidad puntos a añadir al marcador actual.
+     */
     public void incrementarScore(int cantidad) {
         	score += cantidad;
     }
     
     /**
-     * Crea un Power-Up en una posición específica.
-     * @param x Posición en x donde soltar el item.
-     * @param y Posición en y donde soltar el item.
+     * Genera un Power-Up en una posición determinada tras la destrucción de un enemigo.
+     * @param x posición X donde aparece el Power-Up.
+     * @param y posición Y donde aparece el Power-Up.
      */
     public void soltarPowerUp(float x, float y) {
         if (random.nextBoolean()) {
@@ -239,25 +266,31 @@ public class PantallaJuego implements Screen {
         return score;
     }
     
+    // Métodos del ciclo de vida de la pantalla
     
-    
+    /** Se ejecuta cuando la pantalla se muestra. */
     @Override
     public void show() {
         gameMusic.play();
     }
 
+    /** Se ejecuta al cambiar el tamaño de la ventana. */
     @Override
     public void resize(int width, int height) { }
 
+    /** Se ejecuta cuando el juego entra en pausa. */
     @Override
     public void pause() { }
 
+    /** Se ejecuta cuando el juego se reanuda. */
     @Override
     public void resume() { }
 
+    /** Se ejecuta cuando la pantalla deja de ser visible. */
     @Override
     public void hide() { }
 
+    /** Libera los recursos gráficos y de audio asociados a la pantalla. */
     @Override
     public void dispose() {
         this.explosionSound.dispose();

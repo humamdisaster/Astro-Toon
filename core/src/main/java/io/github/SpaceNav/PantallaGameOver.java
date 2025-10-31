@@ -8,14 +8,31 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture; // <-- Importar Texture
 import com.badlogic.gdx.utils.ScreenUtils;
 
-
+/**
+ * Pantalla que se muestra cuando el jugador pierde el juego.
+ * Muestra un fondo de "Game Over", reproduce música y permite reiniciar el juego
+ * al tocar la pantalla o presionar cualquier tecla.
+ */
 public class PantallaGameOver implements Screen {
 
+	/** Referencia al juego principal */
 	private SpaceNavigation game;
+	
+	/** Cámara ortográfica para la proyección 2D */
 	private OrthographicCamera camera;
+    
+	/** Textura de fondo de la pantalla de Game Over */
     private Texture backgroundTexture;
+
+    /** Música reproducida en la pantalla de Game Over */
     private Music gameOverMusic;
 
+    /**
+     * Constructor de la pantalla de Game Over.
+     * Inicializa cámara, textura de fondo y música.
+     *
+     * @param game Instancia del juego principal
+     */
 	public PantallaGameOver(SpaceNavigation game) {
 		this.game = game;
         
@@ -29,6 +46,14 @@ public class PantallaGameOver implements Screen {
         gameOverMusic.play();
 	}
 
+	/**
+     * Renderiza la pantalla cada frame.
+     * - Limpia la pantalla y dibuja la textura de fondo.
+     * - Muestra los mensajes de "Game Over" y reinicio.
+     * - Permite reiniciar el juego al tocar la pantalla o presionar cualquier tecla.
+     *
+     * @param delta Tiempo transcurrido desde el último frame
+     */
 	@Override
 	public void render(float delta) {
 		ScreenUtils.clear(0, 0, 0.2f, 1);
@@ -52,32 +77,57 @@ public class PantallaGameOver implements Screen {
 		}
 	}
  
-	
+	/**
+	 * Se ejecuta cuando la pantalla se establece como activa.
+	 * En esta implementación no realiza acciones adicionales.
+	 */
 	@Override
 	public void show() {
 		
 	}
 
+	/**
+	 * Se ejecuta al cambiar el tamaño de la pantalla.
+	 * En esta implementación no realiza acciones adicionales.
+	 *
+	 * @param width Nuevo ancho de la pantalla
+	 * @param height Nuevo alto de la pantalla
+	 */
 	@Override
 	public void resize(int width, int height) {
 		
 	}
 
+	/**
+	 * Se ejecuta cuando el juego se pausa.
+	 * Pausa la música de Game Over.
+	 */
 	@Override
 	public void pause() {
 		gameOverMusic.pause();
 	}
 
+	/**
+	 * Se ejecuta cuando el juego se reanuda.
+	 * Reproduce la música de Game Over.
+	 */
 	@Override
 	public void resume() {
 		gameOverMusic.play();
 	}
 
+	/**
+	 * Se ejecuta cuando la pantalla deja de ser activa.
+	 * En esta implementación no realiza acciones adicionales.
+	 */
 	@Override
 	public void hide() {
 		
 	}
 
+	/**
+     * Libera los recursos utilizados por la pantalla (textura y música).
+     */
 	@Override
 	public void dispose() {
 		backgroundTexture.dispose();
