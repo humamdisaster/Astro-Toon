@@ -34,25 +34,23 @@ public class NaveJugador extends NaveBase {
      * @param txBala Textura de las balas disparadas
      */
     public NaveJugador(float x, float y, Texture tx, Texture txBala) {
-        super(tx, x, y, 3); 
+        super(tx, x, y); // Llama al constructor de NaveBase (sin vidas)
         this.txBala = txBala;
         this.sonidoHerido = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
         this.soundBala = Gdx.audio.newSound(Gdx.files.internal("shoot.mp3"));
         this.soundPowerUp = Gdx.audio.newSound(Gdx.files.internal("powerup.mp3"));
     }
-
+    
     /**
-     * Actualiza la lógica de la nave del jugador en cada frame.
-     * - Gestiona el estado de herido/invencibilidad
-     * - Procesa input de teclado para moverse y disparar
-     * - Mantiene la nave dentro de los límites de la pantalla
+     * [CAMBIO GM2.2 - PASO ABSTRACTO IMPLEMENTADO]
+     * Este método implementa el 'gestionarLogica' de NaveBase.
+     * Solo se preocupa de la lógica de Input y disparo.
+     * Ya NO llama a actualizarEstadoHerido() ni a mover().
      *
-     * @param juego Instancia de {@link PantallaJuego} para agregar balas y acceder al estado del juego
+     * @param juego Instancia de {@link PantallaJuego} para agregar balas
      */
     @Override
-    public void update(PantallaJuego juego) {
-        actualizarEstadoHerido();
-
+    protected void gestionarLogica(PantallaJuego juego) {
         if (!herido) {
             // Lógica de input
             if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel -= 3;
@@ -67,7 +65,15 @@ public class NaveJugador extends NaveBase {
                 soundBala.play();
             }
         }
-        
+    }
+    
+    /**
+     * [CAMBIO GM2.2 - HOOK IMPLEMENTADO]
+     * Este método sobrescribe el "hook" 'limitarMovimiento' de NaveBase
+     * para implementar la lógica de límites de pantalla, específica del jugador.
+     */
+    @Override
+    protected void limitarMovimiento() {
         // Límites de pantalla
         float x = spr.getX();
         float y = spr.getY();
@@ -84,8 +90,6 @@ public class NaveJugador extends NaveBase {
             xVel = 0;
             spr.setX(PantallaJuego.WORLD_WIDTH - spr.getWidth());
         }
-
-        mover();
     }
     
     /**
@@ -110,14 +114,26 @@ public class NaveJugador extends NaveBase {
     @Override
     public void recibirDano(int dano) {
         if (!herido) {
-            super.recibirDano(dano); 
+            // 1. Llama al Singleton para restar una vida global
+            GameManager.getInstance().loseLife(); 
+            
+            // 2. Activa estado herido local
+            this.herido = true;
+            this.tiempoHerido = this.tiempoHeridoMax;
+            
+            // 3. Comprueba si el juego terminó (usando el Singleton)
+            if (GameManager.getInstance().isGameOver()) {
+                this.destruida = true;
+            }
+            
+            // 4. Reproduce sonido
             sonidoHerido.play();
         }
     }
 
     /**
      * Procesa el efecto de un power-up recolectado.
-     * - VIDA: incrementa las vidas del jugador
+     * - VIDA: [CAMBIO GM2.1] Llama al GameManager para sumar vidas.
      * - ESCUDO: activa invencibilidad temporal
      *
      * @param tipo El {@link TipoPowerUp} que se recogió
@@ -126,7 +142,8 @@ public class NaveJugador extends NaveBase {
     	soundPowerUp.play(0.8f);
         switch (tipo) {
             case VIDA:
-                this.setVidas(this.getVidas() + 1);
+                // [CAMBIO GM2.1] Llama al Singleton
+                GameManager.getInstance().addLife(1);
                 break;
             case ESCUDO:
                 this.activarInvencibilidad(180); // 3 segundos

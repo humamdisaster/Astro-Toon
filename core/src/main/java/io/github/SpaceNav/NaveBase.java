@@ -49,20 +49,55 @@ public abstract class NaveBase implements Colisionable, Objetivo {
      * @param y Posición vertical inicial
      * @param vidas Cantidad de vidas iniciales
      */
-    public NaveBase(Texture tx, float x, float y, int vidas) {
-        this.vidas = vidas;
+    public NaveBase(Texture tx, float x, float y) {
         spr = new Sprite(tx);
         spr.setBounds(x, y, 90, 90); 
     }
 
     /**
-     * Actualiza la lógica de la nave en cada frame.
-     * Método abstracto que debe implementarse en las subclases.
-     *
-     * @param juego Instancia de {@link PantallaJuego} para acceder al estado del juego
+     * [CAMBIO GM2.2 - EL TEMPLATE METHOD]
+     * Este es el "Template Method". Es final, lo que significa que las subclases
+     * no pueden sobrescribirlo. Define el esqueleto del algoritmo de actualización.
+     * * @param juego Instancia de {@link PantallaJuego} para acceder al estado del juego
      */
-    public abstract void update(PantallaJuego juego);
+    public final void update(PantallaJuego juego) {
+        // --- INICIO DEL ESQUELETO ---
 
+        // 1. Paso común: Actualizar estado de invencibilidad (lógica en NaveBase)
+        actualizarEstadoHerido();
+
+        // 2. Paso variable: Lógica de IA o Input (implementado por subclases)
+        gestionarLogica(juego);
+        
+        // 3. Hook opcional: Limitar movimiento (implementado opcionalmente por subclases)
+        limitarMovimiento();
+
+        // 4. Paso común: Aplicar movimiento (lógica en NaveBase)
+        mover();
+        
+        // --- FIN DEL ESQUELETO ---
+    }
+    
+    /**
+     * [CAMBIO GM2.2 - PASO ABSTRACTO]
+     * Este es el paso abstracto que las subclases (NaveJugador, NaveEnemiga)
+     * DEBEN implementar para definir su comportamiento (Input o IA).
+     * Reemplaza al antiguo 'abstract void update()'.
+     *
+     * @param juego Instancia de {@link PantallaJuego}
+     */
+    protected abstract void gestionarLogica(PantallaJuego juego);
+
+    /**
+     * [CAMBIO GM2.2 - HOOK (GANCHO)]
+     * Este es un "hook" opcional. Es un método con una implementación vacía
+     * que las subclases PUEDEN (pero no están obligadas a) sobrescribir.
+     * En nuestro caso, NaveJugador lo usará para los límites de pantalla.
+     */
+    protected void limitarMovimiento() {
+        // Vacío por defecto.
+    }
+    
     /**
      * Dibuja la nave en pantalla.
      * Aplica un efecto de "parpadeo" cuando la nave está herida.
@@ -100,22 +135,14 @@ public abstract class NaveBase implements Colisionable, Objetivo {
     }
 
     /**
-     * Aplica daño a la nave, activando el estado de herido si no estaba previamente.
-     * Si las vidas llegan a 0, la nave se marca como destruida.
+      * Método abstracto para aplicar daño.
+     * Forzamos a NaveJugador y NaveEnemiga a implementar su PROPIA
+     * lógica de daño, separando las vidas del jugador (GameManager)
+     * de las vidas del enemigo (variable local).
      *
      * @param dano Cantidad de daño a aplicar
      */
-    public void recibirDano(int dano) {
-        if (!herido) {
-            this.vidas -= dano;
-            this.herido = true;
-            this.tiempoHerido = this.tiempoHeridoMax;
-            
-            if (this.vidas <= 0) {
-                this.destruida = true;
-            }
-        }
-    }
+    public abstract void recibirDano(int dano);
     
     /**
      * Obtiene el área de colisión de la nave.

@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
  * Pantalla que se muestra cuando el jugador pierde el juego.
  * Muestra un fondo de "Game Over", reproduce música y permite reiniciar el juego
  * al tocar la pantalla o presionar cualquier tecla.
+ * [CAMBIO GM2.1] Ahora también muestra el puntaje final y el HighScore
+ * leyendo la información desde el GameManager (Singleton).
  */
 public class PantallaGameOver implements Screen {
 
@@ -26,11 +28,15 @@ public class PantallaGameOver implements Screen {
 
     /** Música reproducida en la pantalla de Game Over */
     private Music gameOverMusic;
-
+    
+    /** [CAMBIO GM2.1] Almacena el puntaje final leído del Singleton */
+    private int finalScore;
+    
     /**
      * Constructor de la pantalla de Game Over.
      * Inicializa cámara, textura de fondo y música.
-     *
+     * [CAMBIO GM2.1] Obtiene el score final desde el GameManager
+     * y actualiza el HighScore si es necesario.
      * @param game Instancia del juego principal
      */
 	public PantallaGameOver(SpaceNavigation game) {
@@ -39,6 +45,15 @@ public class PantallaGameOver implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, PantallaJuego.WORLD_WIDTH, PantallaJuego.WORLD_HEIGHT); // Usar dimensiones del juego
         backgroundTexture = new Texture(Gdx.files.internal("gameOver.png"));
+        
+     // [CAMBIO GM2.1 - PATRÓN SINGLETON]
+        // 1. Obtenemos el puntaje final desde el Singleton
+        this.finalScore = GameManager.getInstance().getScore();
+        
+        // 2. Comparamos y actualizamos el HighScore
+        if (this.finalScore > game.getHighScore()) {
+            game.setHighScore(this.finalScore);
+        }
         
         gameOverMusic = Gdx.audio.newMusic(Gdx.files.internal("gameOver.mp3")); 
         gameOverMusic.setLooping(false);
@@ -51,7 +66,7 @@ public class PantallaGameOver implements Screen {
      * - Limpia la pantalla y dibuja la textura de fondo.
      * - Muestra los mensajes de "Game Over" y reinicio.
      * - Permite reiniciar el juego al tocar la pantalla o presionar cualquier tecla.
-     *
+     * [CAMBIO GM2.1] Dibuja el puntaje final y el HighScore.
      * @param delta Tiempo transcurrido desde el último frame
      */
 	@Override
@@ -65,14 +80,19 @@ public class PantallaGameOver implements Screen {
         game.getBatch().draw(backgroundTexture, 0, 0, PantallaJuego.WORLD_WIDTH, PantallaJuego.WORLD_HEIGHT);
         
 		game.getFont().draw(game.getBatch(), "Game Over !!! ", 120, 400,400,1,true);
-		game.getFont().draw(game.getBatch(), "Pincha en cualquier lado para reiniciar ...", 100, 300);
+		// [CAMBIO GM2.1] Mostrar puntajes
+        game.getFont().draw(game.getBatch(), "Score Final: " + this.finalScore, 100, 250);
+        game.getFont().draw(game.getBatch(), "HighScore: " + game.getHighScore(), 100, 200);
+
+		game.getFont().draw(game.getBatch(), "Pincha en cualquier lado para ir al Menu ...", 100, 100);
 	
 		game.getBatch().end();
 
 		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,0,10);
-			ss.resize((int)PantallaJuego.WORLD_WIDTH, (int)PantallaJuego.WORLD_HEIGHT);
-			game.setScreen(ss);
+            // [CAMBIO GM2.1]
+            // Es mejor práctica regresar al menú principal.
+            // El menú (PantallaMenu) se encargará de reiniciar el juego.
+			game.setScreen(new PantallaMenu(game));
 			dispose();
 		}
 	}

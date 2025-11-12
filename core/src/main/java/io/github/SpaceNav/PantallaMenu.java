@@ -71,7 +71,17 @@ public class PantallaMenu implements Screen {
 		game.getBatch().end();
 
 		if (Gdx.input.isTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-			Screen ss = new PantallaJuego(game,1,3,0,10);
+			// [CAMBIO GM2.1 - PATRÓN SINGLETON]
+            // Antes de iniciar una nueva partida, reiniciamos el estado
+            // global (vidas=3, score=0) usando el GameManager.
+            GameManager.getInstance().resetGame();
+
+            // [CAMBIO GM2.1]
+            // Se llama al nuevo constructor de PantallaJuego, que ya no
+            // necesita los parámetros de vidas o score, pues los obtiene del GameManager.
+            // (game, ronda, cantEnemigos)
+			Screen ss = new PantallaJuego(game, 1, 10); // Ronda 1, 10 enemigos
+			
 			ss.resize((int)PantallaJuego.WORLD_WIDTH, (int)PantallaJuego.WORLD_HEIGHT);
 			game.setScreen(ss);
 			dispose();

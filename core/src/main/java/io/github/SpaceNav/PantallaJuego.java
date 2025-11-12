@@ -20,6 +20,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * <p>Esta clase implementa {@link Screen} y funciona como el núcleo
  * donde se combinan los diferentes sistemas del juego, como el
  * {@link GestorColisiones} y el {@link GestorRondas}.</p>
+ * [CAMBIO GM2.1] Esta clase ya no almacena 'score' ni 'vidas'.
+ * Ahora consulta al GameManager (Singleton) para obtener esa información.
  */
 public class PantallaJuego implements Screen {
 
@@ -33,7 +35,6 @@ public class PantallaJuego implements Screen {
     private SpriteBatch batch;
     private Sound explosionSound;
     private Music gameMusic;
-    private int score;
     private int ronda;
     private int cantEnemigos;
 
@@ -77,10 +78,9 @@ public class PantallaJuego implements Screen {
      * @param score puntuación acumulada.
      * @param cantEnemigos cantidad de enemigos que aparecerán en la ronda.
      */
-    public PantallaJuego(SpaceNavigation game, int ronda, int vidas, int score, int cantEnemigos) {
+    public PantallaJuego(SpaceNavigation game, int ronda, int cantEnemigos) {
         this.game = game;
         this.ronda = ronda;
-        this.score = score;
         this.cantEnemigos = cantEnemigos;
         this.enemigosMaxNivel = cantEnemigos;
         this.enemigosCreados = 0;
@@ -107,18 +107,23 @@ public class PantallaJuego implements Screen {
         texturaEscudo = new Texture(Gdx.files.internal("cajaEscudo.png"));
 
         // Crear nave del jugador
+        // [CAMBIO GM2.1] El constructor de NaveJugador ya no necesita vidas
         nave = new NaveJugador(30, WORLD_HEIGHT / 2 - 50, texturaNaveJugador, texturaBalaJugador);
-        nave.setVidas(vidas);
     }
 
     /**
-     * Dibuja la interfaz del jugador (HUD), incluyendo vidas, ronda y puntuación.
+     * Dibuja la interfaz del jugador (HUD).
+     * [CAMBIO GM2.1] Lee 'vidas' y 'score' directamente del GameManager.
      */
     public void dibujaEncabezado() {
-        CharSequence str = "Vidas: " + nave.getVidas() + " Ronda: " + ronda;
+        // Obtenemos los datos globales del Singleton
+        int vidasActuales = GameManager.getInstance().getLives();
+        int scoreActual = GameManager.getInstance().getScore();
+
+        CharSequence str = "Vidas: " + vidasActuales + " Ronda: " + ronda;
         game.getFont().getData().setScale(2f);		
         game.getFont().draw(batch, str, 10, 30);
-        game.getFont().draw(batch, "Score:" + this.score, WORLD_WIDTH - 150, 30);
+        game.getFont().draw(batch, "Score:" + scoreActual, WORLD_WIDTH - 150, 30);
         game.getFont().draw(batch, "HighScore:" + game.getHighScore(), WORLD_WIDTH / 2 - 100, 30);
     }
     
@@ -134,14 +139,14 @@ public class PantallaJuego implements Screen {
         // --- 1. LÓGICA DE ACTUALIZACIÓN (UPDATE) ---
 
         // Spawn gradual de enemigos
-        tiempoSpawn += delta;
+    	tiempoSpawn += delta;
         if (enemigosCreados < enemigosMaxNivel && tiempoSpawn >= intervaloSpawn) {
             tiempoSpawn = 0f;
             // Usamos el constructor de NaveEnemiga
             NaveEnemiga enemigo = new NaveEnemiga(texturaNaveEnemiga, nave,
                     WORLD_WIDTH - 100 + random.nextInt(50),
                     random.nextInt((int)WORLD_HEIGHT),
-                    1);
+                    1); // Asumimos 1 vida para NaveEnemiga
             enemigos.add(enemigo);
             enemigosCreados++;
         }
@@ -190,6 +195,18 @@ public class PantallaJuego implements Screen {
 	      
         // --- 4. LÓGICA DE ESTADO DEL JUEGO ---
         
+        // [CAMBIO GM2.1] Comprobar si el jugador ha sido destruido
+        // Si el jugador es destruido, cambiamos a la pantalla de Game Over.
+        if (nave.estaDestruido()) {
+            // Guardar HighScore si es necesario
+            if (GameManager.getInstance().getScore() > game.getHighScore()) {
+                game.setHighScore(GameManager.getInstance().getScore());
+            }
+            game.setScreen(new PantallaGameOver(game)); // Usamos la nueva pantalla
+            dispose();
+            return; // Salir del render loop
+        }
+        
         gestorRondas.manejarRondas(this, nave, enemigosCreados, enemigosMaxNivel);
         
         if (rondaCompletada && !mostrandoTransicion) {
@@ -207,22 +224,24 @@ public class PantallaJuego implements Screen {
             batch.end();
 
             if (tiempoTransicion >= 3f) {
-                Screen siguiente = new PantallaJuego(game, ronda + 1, nave.getVidas(), score, cantEnemigos + 5);
+                // [CAMBIO GM2.1] Ya no pasamos 'vidas' ni 'score' a la siguiente pantalla
+                Screen siguiente = new PantallaJuego(game, ronda + 1, cantEnemigos + 5);
                 siguiente.resize(1200, 800);
                 game.setScreen(siguiente);
                 dispose();
             }
         }
+     }
 
-    }
-
-    /**
+     /**
      * Incrementa la puntuación del jugador.
+     * [CAMBIO GM2.1] Llama al GameManager para añadir el score.
      * @param cantidad puntos a añadir al marcador actual.
      */
-    public void incrementarScore(int cantidad) {
-        	score += cantidad;
-    }
+        public void incrementarScore(int cantidad) {
+            	// score += cantidad; // Ya no se usa la variable local
+            	GameManager.getInstance().addScore(cantidad);
+       }
     
     /**
      * Genera un Power-Up en una posición determinada tras la destrucción de un enemigo.
@@ -260,10 +279,6 @@ public class PantallaJuego implements Screen {
 
     public ArrayList<NaveEnemiga> getEnemigos() {
         return enemigos;
-    }
-    
-    public int getScore() {
-        return score;
     }
     
     // Métodos del ciclo de vida de la pantalla

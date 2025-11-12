@@ -11,7 +11,8 @@ public class NaveEnemiga extends NaveBase {
 	
 	/** Referencia al objetivo que la nave enemiga sigue, generalmente el jugador */
     private Objetivo objetivo; // referencia al jugador
-
+    private int vidas;
+    
     /**
      * Constructor de la nave enemiga.
      * Inicializa la textura, la posición, las vidas y asigna el objetivo.
@@ -23,21 +24,21 @@ public class NaveEnemiga extends NaveBase {
      * @param vidas Cantidad de vidas iniciales
      */
     public NaveEnemiga(Texture tx, Objetivo objetivo, float x, float y, int vidas) {
-        super(tx, x, y, vidas);
+        super(tx, x, y); // Llama al constructor de NaveBase (sin vidas)
         this.objetivo = objetivo;
+        this.vidas = vidas; // Almacena vidas localmente
     }
-
+    
     /**
-     * Actualiza la lógica de la nave enemiga en cada frame.
-     * - Gestiona el estado de herido/invencibilidad.
-     * - Calcula el movimiento hacia el objetivo si éste existe y no está destruido.
+     * [CAMBIO GM2.2 - PASO ABSTRACTO IMPLEMENTADO]
+     * Este método implementa el 'gestionarLogica' de NaveBase.
+     * Solo se preocupa de la lógica de IA (perseguir al objetivo).
+     * Ya NO llama a actualizarEstadoHerido() ni a mover().
      *
-     * @param juego Instancia de {@link PantallaJuego} para acceder al estado del juego
+     * @param juego Instancia de {@link PantallaJuego}
      */
     @Override
-    public void update(PantallaJuego juego) {
-        actualizarEstadoHerido();
-
+    protected void gestionarLogica(PantallaJuego juego) {
         if (objetivo == null || objetivo.estaDestruido()) return;
         
         // Movimiento hacia la nave
@@ -50,7 +51,25 @@ public class NaveEnemiga extends NaveBase {
             xVel = velocidad * dx / distancia;
             yVel = velocidad * dy / distancia;
         }
-
-        mover();
+    }
+    /**
+     * Implementación del método abstracto 'recibirDano' de NaveBase.
+     * Esta lógica es específica del ENEMIGO.
+     * Utiliza su variable 'vidas' local.
+     * NO llama al GameManager.
+     *
+     * @param dano Cantidad de daño a recibir
+     */
+    @Override
+    public void recibirDano(int dano) {
+        if (!herido) {
+            this.vidas -= dano;
+            this.herido = true;
+            this.tiempoHerido = this.tiempoHeridoMax;
+            
+            if (this.vidas <= 0) {
+                this.destruida = true;
+            }
+        }
     }
 }
