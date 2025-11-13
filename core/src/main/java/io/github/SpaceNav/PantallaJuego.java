@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * {@link GestorColisiones} y el {@link GestorRondas}.</p>
  * [CAMBIO GM2.1] Esta clase ya no almacena 'score' ni 'vidas'.
  * Ahora consulta al GameManager (Singleton) para obtener esa información.
+ * [CAMBIO GM2.3] Carga y suelta el nuevo PowerUp de Disparo Doble.
  */
 public class PantallaJuego implements Screen {
 
@@ -56,6 +57,8 @@ public class PantallaJuego implements Screen {
     private Texture texturaVida;
     /** Textura para el power-up de escudo. */
     private Texture texturaEscudo;
+    /** [CAMBIO GM2.3] Textura para el nuevo power-up */
+    private Texture texturaDisparoDoble;
 
     // Variables para spawn gradual
     private int enemigosMaxNivel;
@@ -72,10 +75,10 @@ public class PantallaJuego implements Screen {
      * Constructor principal. Inicializa los recursos y entidades necesarias
      * para comenzar la ronda.
      *
+     * [CAMBIO GM2.3] Carga la textura para el nuevo power-up.
+     *
      * @param game referencia al juego principal.
      * @param ronda número actual de la ronda.
-     * @param vidas cantidad de vidas del jugador.
-     * @param score puntuación acumulada.
      * @param cantEnemigos cantidad de enemigos que aparecerán en la ronda.
      */
     public PantallaJuego(SpaceNavigation game, int ronda, int cantEnemigos) {
@@ -105,6 +108,10 @@ public class PantallaJuego implements Screen {
         texturaBalaJugador = new Texture(Gdx.files.internal("bolaPelo.png"));
         texturaVida = new Texture(Gdx.files.internal("pezVida.png"));
         texturaEscudo = new Texture(Gdx.files.internal("cajaEscudo.png"));
+        // [CAMBIO GM2.3] Cargar la nueva textura.
+        // Como no tenemos una textura nueva, usaremos la "bolaPelo.png" como placeholder.
+        // Se puede cambiar bolaPelo.png por otra imagen.
+        texturaDisparoDoble = new Texture(Gdx.files.internal("bolaPelo.png"));
 
         // Crear nave del jugador
         // [CAMBIO GM2.1] El constructor de NaveJugador ya no necesita vidas
@@ -245,14 +252,20 @@ public class PantallaJuego implements Screen {
     
     /**
      * Genera un Power-Up en una posición determinada tras la destrucción de un enemigo.
+     * [CAMBIO GM2.3] Ahora puede soltar uno de los tres tipos de PowerUp.
      * @param x posición X donde aparece el Power-Up.
      * @param y posición Y donde aparece el Power-Up.
      */
     public void soltarPowerUp(float x, float y) {
-        if (random.nextBoolean()) {
+    	int tipoPower = random.nextInt(3); // Genera 0, 1, o 2
+        
+        if (tipoPower == 0) {
             powerUps.add(new PowerUp(x, y, texturaVida, TipoPowerUp.VIDA));
-        } else {
+        } else if (tipoPower == 1) {
             powerUps.add(new PowerUp(x, y, texturaEscudo, TipoPowerUp.ESCUDO));
+        } else {
+            // [CAMBIO GM2.3] Añadida la posibilidad de soltar el nuevo power-up
+            powerUps.add(new PowerUp(x, y, texturaDisparoDoble, TipoPowerUp.DISPARO_DOBLE));
         }
     }
     
@@ -305,7 +318,9 @@ public class PantallaJuego implements Screen {
     @Override
     public void hide() { }
 
-    /** Libera los recursos gráficos y de audio asociados a la pantalla. */
+    /** Libera los recursos gráficos y de audio asociados a la pantalla. 
+     * [CAMBIO GM2.3] Añade la nueva textura al dispose. 
+    */
     @Override
     public void dispose() {
         this.explosionSound.dispose();
@@ -316,5 +331,6 @@ public class PantallaJuego implements Screen {
         texturaFondo.dispose(); 
         texturaVida.dispose();
         texturaEscudo.dispose();
+        texturaDisparoDoble.dispose(); // [CAMBIO GM2.3]
     }
 }

@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
  * Clase que representa la nave controlada por el jugador.
  * Hereda de {@link NaveBase} y gestiona el input del teclado para moverse y disparar.
  * Además maneja efectos de sonido al recibir daño, disparar o recolectar power-ups.
+ * [CAMBIO GM2.3 - PATRÓN STRATEGY (Contexto)]
+ * Esta clase ahora actúa como el "Contexto" del patrón Strategy.
+ * Delega la lógica de disparo a un objeto IDisparoStrategy.
  */
 public class NaveJugador extends NaveBase {
 
@@ -23,10 +26,18 @@ public class NaveJugador extends NaveBase {
     
     /** Textura utilizada para las balas disparadas */
     private Sound soundPowerUp;
+    
+    /**
+     * [CAMBIO GM2.3 - PATRÓN STRATEGY]
+     * Almacena la estrategia de disparo actual. Por defecto, será DisparoSimpleStrategy.
+     */
+    private DisparoStrategy disparoStrategy;
 
     /**
      * Constructor de la nave del jugador.
      * Inicializa la textura, posición, vidas y los sonidos.
+     *
+     *[CAMBIO GM2.3] Inicializa la estrategia de disparo por defecto.
      *
      * @param x Posición horizontal inicial
      * @param y Posición vertical inicial
@@ -39,6 +50,8 @@ public class NaveJugador extends NaveBase {
         this.sonidoHerido = Gdx.audio.newSound(Gdx.files.internal("hit.mp3"));
         this.soundBala = Gdx.audio.newSound(Gdx.files.internal("shoot.mp3"));
         this.soundPowerUp = Gdx.audio.newSound(Gdx.files.internal("powerup.mp3"));
+        // [CAMBIO GM2.3] Establece la estrategia de disparo inicial
+        this.disparoStrategy = new DisparoSimpleStrategy();
     }
     
     /**
@@ -46,6 +59,7 @@ public class NaveJugador extends NaveBase {
      * Este método implementa el 'gestionarLogica' de NaveBase.
      * Solo se preocupa de la lógica de Input y disparo.
      * Ya NO llama a actualizarEstadoHerido() ni a mover().
+     * [CAMBIO GM2.3] La lógica de disparo ahora se delega a la estrategia.
      *
      * @param juego Instancia de {@link PantallaJuego} para agregar balas
      */
@@ -60,8 +74,11 @@ public class NaveJugador extends NaveBase {
         
             // Disparo
             if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                Bullet bala = new Bullet(spr.getX() + spr.getWidth() - 5, spr.getY() + spr.getHeight() / 2 - 5, 3, 0, txBala);
-                juego.agregarBala(bala);
+                // [CAMBIO GM2.3 - PATRÓN STRATEGY]
+                // Delega la lógica de disparo a la estrategia actual.
+                // La NaveJugador ya no "sabe" cómo dispara, solo "ordena" disparar.
+                this.disparoStrategy.disparar(this, txBala, juego);
+                
                 soundBala.play();
             }
         }
@@ -108,7 +125,10 @@ public class NaveJugador extends NaveBase {
     }
 
     /**
-     * Aplica daño a la nave, reproduciendo el sonido correspondiente.
+     * Implementación del método abstracto 'recibirDano' de NaveBase.
+     * Esta lógica es específica del JUGADOR.
+     * Llama al GameManager (Singleton) para restar vidas.
+     *
      * @param dano Cantidad de daño a recibir
      */
     @Override
@@ -135,6 +155,7 @@ public class NaveJugador extends NaveBase {
      * Procesa el efecto de un power-up recolectado.
      * - VIDA: [CAMBIO GM2.1] Llama al GameManager para sumar vidas.
      * - ESCUDO: activa invencibilidad temporal
+     * [CAMBIO GM2.3] Añade el caso para DISPARO_DOBLE.
      *
      * @param tipo El {@link TipoPowerUp} que se recogió
      */
@@ -142,11 +163,15 @@ public class NaveJugador extends NaveBase {
     	soundPowerUp.play(0.8f);
         switch (tipo) {
             case VIDA:
-                // [CAMBIO GM2.1] Llama al Singleton
                 GameManager.getInstance().addLife(1);
                 break;
             case ESCUDO:
                 this.activarInvencibilidad(180); // 3 segundos
+                break;
+            // [CAMBIO GM2.3 - PATRÓN STRATEGY]
+            // Al recibir el power-up, se cambia la estrategia de disparo.
+            case DISPARO_DOBLE:
+                this.disparoStrategy = new DisparoDobleStrategy();
                 break;
         }
     }
