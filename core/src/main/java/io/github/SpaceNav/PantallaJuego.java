@@ -81,7 +81,7 @@ public class PantallaJuego implements Screen {
      * @param ronda número actual de la ronda.
      * @param cantEnemigos cantidad de enemigos que aparecerán en la ronda.
      */
-    public PantallaJuego(SpaceNavigation game, int ronda, int cantEnemigos) {
+    public PantallaJuego(SpaceNavigation game, int ronda, int cantEnemigos, FabricaNivel fabricaNivel) {
         this.game = game;
         this.ronda = ronda;
         this.cantEnemigos = cantEnemigos;
@@ -94,24 +94,24 @@ public class PantallaJuego implements Screen {
         gestorColisiones = new GestorColisiones();
         gestorRondas = new GestorRondas();
 
-        // Cargar sonidos y música
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
-        gameMusic = Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav"));
-        gameMusic.setLooping(true);
-        gameMusic.setVolume(1f);
-        gameMusic.play();
-
-        // Cargar texturas
-        texturaFondo = new Texture(Gdx.files.internal("sala.png"));
-        texturaNaveJugador = new Texture(Gdx.files.internal("gato1.png"));
-        texturaNaveEnemiga = new Texture(Gdx.files.internal("secador.png"));
-        texturaBalaJugador = new Texture(Gdx.files.internal("bolaPelo.png"));
-        texturaVida = new Texture(Gdx.files.internal("pezVida.png"));
-        texturaEscudo = new Texture(Gdx.files.internal("cajaEscudo.png"));
+        // [CAMBIO GM2.4] Cargar texturas mediante nivel establecido.
+        texturaFondo = fabricaNivel.crearFondo();
+        texturaNaveJugador = fabricaNivel.crearTexturaNaveJugador();
+        texturaNaveEnemiga = fabricaNivel.crearTexturaNaveEnemiga();
+        texturaBalaJugador = fabricaNivel.crearTexturaBala();
+        texturaVida = fabricaNivel.crearTexturaVida();
+        texturaEscudo = fabricaNivel.crearTexturaEscudo();
         // [CAMBIO GM2.3] Cargar la nueva textura.
         // Como no tenemos una textura nueva, usaremos la "bolaPelo.png" como placeholder.
         // Se puede cambiar bolaPelo.png por otra imagen.
-        texturaDisparoDoble = new Texture(Gdx.files.internal("bolaPelo.png"));
+        texturaDisparoDoble = fabricaNivel.crearTexturaDisparoDoble();
+        
+        // Cargar sonidos y música
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
+        gameMusic = fabricaNivel.crearMusicaFondo();
+        gameMusic.setLooping(true);
+        gameMusic.setVolume(1f);
+        gameMusic.play();
 
         // Crear nave del jugador
         // [CAMBIO GM2.1] El constructor de NaveJugador ya no necesita vidas
@@ -132,6 +132,14 @@ public class PantallaJuego implements Screen {
         game.getFont().draw(batch, str, 10, 30);
         game.getFont().draw(batch, "Score:" + scoreActual, WORLD_WIDTH - 150, 30);
         game.getFont().draw(batch, "HighScore:" + game.getHighScore(), WORLD_WIDTH / 2 - 100, 30);
+    }
+    
+    private FabricaNivel seleccionarFabricaPorRonda(int ronda) {
+        switch (ronda) {
+            case 1: return new FabricaNivelSala();
+            case 2: return new FabricaNivelEscaleras();
+            default: return new FabricaNivelCocina();
+        }
     }
     
     /**
@@ -231,8 +239,11 @@ public class PantallaJuego implements Screen {
             batch.end();
 
             if (tiempoTransicion >= 3f) {
+            	// [CAMBIO GM2.4] Elegir la fábrica según la ronda
+            	FabricaNivel fabricaSiguiente = seleccionarFabricaPorRonda(ronda + 1);
+            	
                 // [CAMBIO GM2.1] Ya no pasamos 'vidas' ni 'score' a la siguiente pantalla
-                Screen siguiente = new PantallaJuego(game, ronda + 1, cantEnemigos + 5);
+                Screen siguiente = new PantallaJuego(game, ronda + 1, cantEnemigos + 5, fabricaSiguiente);
                 siguiente.resize(1200, 800);
                 game.setScreen(siguiente);
                 dispose();
