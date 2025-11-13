@@ -1,7 +1,5 @@
 package io.github.SpaceNav;
 
-import com.badlogic.gdx.Screen;
-
 /**
  * Clase responsable de gestionar las rondas del juego.
  * Controla las condiciones de victoria y 
