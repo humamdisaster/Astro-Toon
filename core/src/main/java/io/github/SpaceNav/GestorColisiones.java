@@ -33,26 +33,23 @@ public class GestorColisiones {
             Sound explosionSound,
             PantallaJuego juego) {
 
-        if (!nave.estaHerido()) {
-
-            // --- Balas vs Enemigos ---
-            for (int i = 0; i < balas.size(); i++) {
-                Bullet b = balas.get(i);
-                for (int j = 0; j < enemigos.size(); j++) {
-                    NaveEnemiga enemigo = enemigos.get(j);
-                    if (b.colisionaCon(enemigo)) {
-                        b.alColisionar(enemigo);
-                        if (enemigo.estaDestruido()) {
-                            explosionSound.play(0.3f);
-                            enemigos.remove(j);
-                            j--;
-                            juego.incrementarScore(10);
-                            
-                            juego.soltarPowerUp(enemigo.getX(), enemigo.getY());
-                        }
+    	// --- Balas vs Enemigos ---
+        for (int i = 0; i < balas.size(); i++) {
+            Bullet b = balas.get(i);
+            for (int j = 0; j < enemigos.size(); j++) {
+                NaveEnemiga enemigo = enemigos.get(j);
+                if (b.colisionaCon(enemigo)) {
+                    b.alColisionar(enemigo);
+                    if (enemigo.estaDestruido()) {
+                        explosionSound.play(0.3f);
+                        enemigos.remove(j);
+                        j--;
+                        juego.incrementarScore(10);
+                        juego.soltarPowerUp(enemigo.getX(), enemigo.getY());
                     }
                 }
             }
+        }
 
             // --- Enemigos vs Enemigos ---
             for (int i = 0; i < enemigos.size(); i++) {
@@ -70,11 +67,12 @@ public class GestorColisiones {
                 NaveEnemiga enemigo = enemigos.get(i);
                 if (nave.colisionaCon(enemigo)) {
                     nave.alColisionar(enemigo);
-                    enemigos.remove(i);
-                    i--;
+                    if (!nave.estaHerido()) {
+                        enemigos.remove(i);
+                        i--;
+                   }
                 }
             }
-        }
 
         // --- Jugador vs PowerUps ---
         for (int i = 0; i < powerUps.size(); i++) {

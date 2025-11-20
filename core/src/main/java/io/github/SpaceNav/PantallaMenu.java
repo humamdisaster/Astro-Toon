@@ -76,25 +76,12 @@ public class PantallaMenu implements Screen {
             // global (vidas=3, score=0) usando el GameManager.
             GameManager.getInstance().resetGame();
 
-            // [CAMBIO GM2.4 - Abstract Factory]
-            // Elegimos qué fábrica usar según la ronda o nivel.
-            FabricaNivel fabricaNivel;
-
-            int rondaActual = 1; // Si quieres, luego puedes obtenerla de GameManager
-
-            if (rondaActual == 1) {
-                fabricaNivel = new FabricaNivelSala();
-            } else if (rondaActual == 2) { 
-                fabricaNivel = new FabricaNivelEscaleras();
-            } else {
-                fabricaNivel = new FabricaNivelCocina();
-            }
+            // [CORRECCIÓN]
+            // Al iniciar el juego desde el menú, siempre empezamos en la Ronda 1,
+            // por lo que usamos FabricaNivelSala.
+            // Es necesario usar la palabra clave 'new'.
             
-            // [CAMBIO GM2.1]
-            // Se llama al nuevo constructor de PantallaJuego, que ya no
-            // necesita los parámetros de vidas o score, pues los obtiene del GameManager.
-            // (game, ronda, cantEnemigos)
-			Screen ss = new PantallaJuego(game, 1, 10, fabricaNivel); // Ronda 1, 10 enemigos
+			Screen ss = new PantallaJuego(game, 1, 10, new FabricaNivelSala()); // Ronda 1, 10 enemigos
 			
 			ss.resize((int)PantallaJuego.WORLD_WIDTH, (int)PantallaJuego.WORLD_HEIGHT);
 			game.setScreen(ss);

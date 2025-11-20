@@ -135,10 +135,16 @@ public class PantallaJuego implements Screen {
     }
     
     private FabricaNivel seleccionarFabricaPorRonda(int ronda) {
-        switch (ronda) {
-            case 1: return new FabricaNivelSala();
-            case 2: return new FabricaNivelEscaleras();
-            default: return new FabricaNivelCocina();
+        if (ronda < 4) {
+            return new FabricaNivelSala();
+        } else if (ronda <= 10) {
+            return new FabricaNivelEscaleras();
+        } else if (ronda <= 15) {
+            return new FabricaNivelAtico();
+        } else if (ronda <= 20) {
+            return new FabricaNivelCielo();
+        } else {
+            return new FabricaNivelEspacio();
         }
     }
     

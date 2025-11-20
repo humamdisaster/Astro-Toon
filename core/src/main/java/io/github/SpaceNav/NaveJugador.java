@@ -65,22 +65,19 @@ public class NaveJugador extends NaveBase {
      */
     @Override
     protected void gestionarLogica(PantallaJuego juego) {
-        if (!herido) {
-            // Lógica de input
-            if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel -= 3;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel += 3;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel -= 3;
-            if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel += 3;
+    	// Lógica de input
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel -= 3;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel += 3;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel -= 3;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel += 3;
         
-            // Disparo
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                // [CAMBIO GM2.3 - PATRÓN STRATEGY]
-                // Delega la lógica de disparo a la estrategia actual.
-                // La NaveJugador ya no "sabe" cómo dispara, solo "ordena" disparar.
-                this.disparoStrategy.disparar(this, txBala, juego);
-                
-                soundBala.play();
-            }
+        // Disparo
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        	// [CAMBIO GM2.3 - PATRÓN STRATEGY]
+        	// Delega la lógica de disparo a la estrategia actual.
+        	// La NaveJugador ya no "sabe" cómo dispara, solo "ordena" disparar.
+        	this.disparoStrategy.disparar(this, txBala, juego);
+            soundBala.play();
         }
     }
     
