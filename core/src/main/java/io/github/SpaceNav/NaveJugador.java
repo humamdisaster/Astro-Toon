@@ -66,10 +66,10 @@ public class NaveJugador extends NaveBase {
     @Override
     protected void gestionarLogica(PantallaJuego juego) {
     	// Lógica de input
-        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel -= 3;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel += 3;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel -= 3;
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel += 3;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) xVel -= 0.5;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) xVel += 0.5;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) yVel -= 0.5;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) yVel += 0.5;
         
         // Disparo
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {

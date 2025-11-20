@@ -135,15 +135,24 @@ public class PantallaJuego implements Screen {
     }
     
     private FabricaNivel seleccionarFabricaPorRonda(int ronda) {
-        if (ronda < 4) {
+        // Rondas 1, 2 -> Sala
+        if (ronda <= 2) {
             return new FabricaNivelSala();
-        } else if (ronda <= 10) {
+        } 
+        // Rondas 3, 4 -> Escaleras
+        else if (ronda <= 4) {
             return new FabricaNivelEscaleras();
-        } else if (ronda <= 15) {
+        } 
+        // Rondas 5, 6 -> Atico
+        else if (ronda <= 6) {
             return new FabricaNivelAtico();
-        } else if (ronda <= 20) {
+        } 
+        // Rondas 7, 8 -> Cielo
+        else if (ronda <= 8) {
             return new FabricaNivelCielo();
-        } else {
+        } 
+        // Rondas 9 en adelante -> Espacio
+        else {
             return new FabricaNivelEspacio();
         }
     }
