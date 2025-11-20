@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.pantallas;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +11,22 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.entidades.Bullet;
+import io.github.SpaceNav.entidades.NaveEnemiga;
+import io.github.SpaceNav.entidades.NaveJugador;
+import io.github.SpaceNav.entidades.PowerUp;
+import io.github.SpaceNav.fabricas.FabricaNivel;
+import io.github.SpaceNav.fabricas.FabricaNivelAtico;
+import io.github.SpaceNav.fabricas.FabricaNivelCielo;
+import io.github.SpaceNav.fabricas.FabricaNivelEscaleras;
+import io.github.SpaceNav.fabricas.FabricaNivelEspacio;
+import io.github.SpaceNav.fabricas.FabricaNivelSala;
+import io.github.SpaceNav.gestores.GameManager;
+import io.github.SpaceNav.gestores.GestorColisiones;
+import io.github.SpaceNav.gestores.GestorRondas;
+import io.github.SpaceNav.util.TipoPowerUp;
 
 /**
  * Pantalla principal del juego. Se encarga de la lógica general,
@@ -107,7 +123,7 @@ public class PantallaJuego implements Screen {
         texturaDisparoDoble = fabricaNivel.crearTexturaDisparoDoble();
         
         // Cargar sonidos y música
-        explosionSound = Gdx.audio.newSound(Gdx.files.internal("explosion.ogg"));
+        explosionSound = Gdx.audio.newSound(Gdx.files.internal("newExplotion.mp3"));
         gameMusic = fabricaNivel.crearMusicaFondo();
         gameMusic.setLooping(true);
         gameMusic.setVolume(1f);

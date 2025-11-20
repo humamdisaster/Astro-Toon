@@ -5,6 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.github.SpaceNav.pantallas.PantallaMenu;
+
 /**
  * Clase principal del juego.
  * Extiende {@link Game} de LibGDX y se encarga de:

@@ -1,13 +1,13 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.fabricas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 
-public class FabricaNivelCielo implements FabricaNivel {
+public class FabricaNivelAtico implements FabricaNivel {
     @Override
     public Texture crearFondo() {
-        return new Texture(Gdx.files.internal("cielo.png")); 
+        return new Texture(Gdx.files.internal("atico.png"));
     }
     
     @Override public Texture crearTexturaNaveJugador() { return new Texture(Gdx.files.internal("gato1.png")); }

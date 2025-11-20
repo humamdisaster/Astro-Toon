@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.interfaces;
 
 /**
  * Interfaz que define un objetivo dentro del juego.

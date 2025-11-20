@@ -1,10 +1,14 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.entidades;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+
+import io.github.SpaceNav.interfaces.Colisionable;
+import io.github.SpaceNav.interfaces.Objetivo;
+import io.github.SpaceNav.pantallas.PantallaJuego;
 
 /**
  * Clase abstracta que representa una nave genérica en el juego, ya sea del jugador o enemiga.
@@ -283,5 +287,13 @@ public abstract class NaveBase implements Colisionable, Objetivo {
      */
     public void setYVel(float yVel) {
     	this.yVel = yVel;
+    }
+    
+    public float getAncho() {
+        return spr.getWidth();
+    }
+
+    public float getAlto() {
+        return spr.getHeight();
     }
 }

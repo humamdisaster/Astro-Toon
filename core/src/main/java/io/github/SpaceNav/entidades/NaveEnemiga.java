@@ -1,6 +1,9 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.entidades;
 
 import com.badlogic.gdx.graphics.Texture;
+
+import io.github.SpaceNav.interfaces.Objetivo;
+import io.github.SpaceNav.pantallas.PantallaJuego;
 
 /**
  * Clase que representa a una nave enemiga del juego.

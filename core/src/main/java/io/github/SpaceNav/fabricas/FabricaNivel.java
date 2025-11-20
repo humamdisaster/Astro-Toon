@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.fabricas;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.audio.Music;

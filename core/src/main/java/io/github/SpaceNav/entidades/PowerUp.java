@@ -1,9 +1,12 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.entidades;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+
+import io.github.SpaceNav.interfaces.Colisionable;
+import io.github.SpaceNav.util.TipoPowerUp;
 
 /**
  * Representa un objeto de {@code Power-Up} que aparece en la pantalla

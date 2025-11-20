@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.util;
 
 /**
  * Define los tipos de Power-Ups que pueden existir en el juego.

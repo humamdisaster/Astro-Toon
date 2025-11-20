@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.interfaces;
 
 import com.badlogic.gdx.math.Rectangle;
 

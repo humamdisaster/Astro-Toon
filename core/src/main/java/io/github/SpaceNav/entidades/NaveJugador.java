@@ -1,9 +1,17 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.entidades;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+
+import io.github.SpaceNav.estrategias.DisparoDobleStrategy;
+import io.github.SpaceNav.estrategias.DisparoSimpleStrategy;
+import io.github.SpaceNav.estrategias.DisparoStrategy;
+import io.github.SpaceNav.gestores.GameManager;
+import io.github.SpaceNav.interfaces.Colisionable;
+import io.github.SpaceNav.pantallas.PantallaJuego;
+import io.github.SpaceNav.util.TipoPowerUp;
 
 /**
  * Clase que representa la nave controlada por el jugador.

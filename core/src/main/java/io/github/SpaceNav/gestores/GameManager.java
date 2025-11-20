@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.gestores;
 
 /**
  * [CLASE GM2.1 - PATRÓN SINGLETON]

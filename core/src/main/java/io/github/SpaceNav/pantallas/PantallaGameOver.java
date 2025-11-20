@@ -1,4 +1,4 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.pantallas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -7,6 +7,9 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture; // <-- Importar Texture
 import com.badlogic.gdx.utils.ScreenUtils;
+
+import io.github.SpaceNav.SpaceNavigation;
+import io.github.SpaceNav.gestores.GameManager;
 
 /**
  * Pantalla que se muestra cuando el jugador pierde el juego.

@@ -1,8 +1,14 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.gestores;
 
 import java.util.ArrayList;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
+
+import io.github.SpaceNav.entidades.Bullet;
+import io.github.SpaceNav.entidades.NaveEnemiga;
+import io.github.SpaceNav.entidades.NaveJugador;
+import io.github.SpaceNav.entidades.PowerUp;
+import io.github.SpaceNav.pantallas.PantallaJuego;
 
 /**
  * Clase responsable de gestionar todas las colisiones entre los objetos
@@ -47,8 +53,8 @@ public class GestorColisiones {
                         j--;
                         juego.incrementarScore(10);
                         
-                        // --- CAMBIO: Probabilidad del 5% (muy raro) ---
-                        if (MathUtils.random(1, 100) <= 5) {
+                        // --- CAMBIO: Probabilidad del 10% ---
+                        if (MathUtils.random(1, 100) <= 10) {
                             juego.soltarPowerUp(enemigo.getX(), enemigo.getY());
                         }
                     }

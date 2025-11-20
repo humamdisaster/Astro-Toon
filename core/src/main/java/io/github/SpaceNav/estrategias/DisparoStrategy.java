@@ -1,6 +1,9 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.estrategias;
 
 import com.badlogic.gdx.graphics.Texture;
+
+import io.github.SpaceNav.entidades.NaveJugador;
+import io.github.SpaceNav.pantallas.PantallaJuego;
 
 /**
  * [CLASE GM2.3 - PATRÓN STRATEGY (Interfaz)]

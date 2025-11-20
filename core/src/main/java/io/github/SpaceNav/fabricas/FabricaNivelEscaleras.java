@@ -1,14 +1,14 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.fabricas;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 
-public class FabricaNivelCocina implements FabricaNivel {
+public class FabricaNivelEscaleras implements FabricaNivel {
 
     @Override
     public Texture crearFondo() {
-        return new Texture(Gdx.files.internal("sala.png"));
+        return new Texture(Gdx.files.internal("escaleras.png"));
     }
 
     @Override

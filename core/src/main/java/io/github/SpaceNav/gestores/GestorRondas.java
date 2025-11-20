@@ -1,4 +1,7 @@
-package io.github.SpaceNav;
+package io.github.SpaceNav.gestores;
+
+import io.github.SpaceNav.entidades.NaveJugador;
+import io.github.SpaceNav.pantallas.PantallaJuego;
 
 /**
  * Clase responsable de gestionar las rondas del juego.
