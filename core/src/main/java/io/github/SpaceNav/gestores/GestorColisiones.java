@@ -48,7 +48,7 @@ public class GestorColisiones {
                 if (b.colisionaCon(enemigo)) {
                     b.alColisionar(enemigo);
                     if (enemigo.estaDestruido()) {
-                        explosionSound.play(0.3f);
+                        explosionSound.play(1.0f);
                         enemigos.remove(j);
                         j--;
                         juego.incrementarScore(10);
@@ -78,10 +78,9 @@ public class GestorColisiones {
                 NaveEnemiga enemigo = enemigos.get(i);
                 if (nave.colisionaCon(enemigo)) {
                     nave.alColisionar(enemigo);
-                    if (!nave.estaHerido()) {
-                        enemigos.remove(i);
-                        i--;
-                   }
+                    enemigos.remove(i);
+                    i--;
+                    explosionSound.play(1.0f);
                 }
             }
 
