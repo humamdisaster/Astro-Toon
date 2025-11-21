@@ -15,6 +15,6 @@ public class FabricaNivelCielo implements FabricaNivel {
     @Override public Texture crearTexturaBala() { return new Texture(Gdx.files.internal("bolaPelo.png")); }
     @Override public Texture crearTexturaVida() { return new Texture(Gdx.files.internal("pezVida.png")); }
     @Override public Texture crearTexturaEscudo() { return new Texture(Gdx.files.internal("cajaEscudo.png")); }
-    @Override public Texture crearTexturaDisparoDoble() { return new Texture(Gdx.files.internal("bolaPelo.png")); }
+    @Override public Texture crearTexturaDisparoDoble() { return new Texture(Gdx.files.internal("brocoli.png")); }
     @Override public Music crearMusicaFondo() { return Gdx.audio.newMusic(Gdx.files.internal("piano-loops.wav")); }
 }

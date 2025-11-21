@@ -38,7 +38,7 @@ public class FabricaNivelSala implements FabricaNivel {
 
     @Override
     public Texture crearTexturaDisparoDoble() {
-        return new Texture(Gdx.files.internal("bolaPelo.png"));
+        return new Texture(Gdx.files.internal("brocoli.png"));
     }
 
     @Override
