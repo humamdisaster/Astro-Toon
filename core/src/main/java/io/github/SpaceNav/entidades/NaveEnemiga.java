@@ -14,7 +14,9 @@ public class NaveEnemiga extends NaveBase {
 	
 	/** Referencia al objetivo que la nave enemiga sigue, generalmente el jugador */
     private Objetivo objetivo; // referencia al jugador
-    private int vidas;
+    
+    /** Cantidad de vidas propias del enemigo (separadas de las de NaveBase) */
+    private int vidasEnemigo;
     
     /**
      * Constructor de la nave enemiga.
@@ -29,7 +31,7 @@ public class NaveEnemiga extends NaveBase {
     public NaveEnemiga(Texture tx, Objetivo objetivo, float x, float y, int vidas) {
         super(tx, x, y); // Llama al constructor de NaveBase (sin vidas)
         this.objetivo = objetivo;
-        this.vidas = vidas; // Almacena vidas localmente
+        this.vidasEnemigo = vidas; // Guarda vidas ENEMIGAS localmente
     }
     
     /**
@@ -55,6 +57,7 @@ public class NaveEnemiga extends NaveBase {
             yVel = velocidad * dy / distancia;
         }
     }
+
     /**
      * Implementación del método abstracto 'recibirDano' de NaveBase.
      * Esta lógica es específica del ENEMIGO.
@@ -66,11 +69,11 @@ public class NaveEnemiga extends NaveBase {
     @Override
     public void recibirDano(int dano) {
         if (!herido) {
-            this.vidas -= dano;
+            this.vidasEnemigo -= dano;
             this.herido = true;
             this.tiempoHerido = this.tiempoHeridoMax;
             
-            if (this.vidas <= 0) {
+            if (this.vidasEnemigo <= 0) {
                 this.destruida = true;
             }
         }
